@@ -2,8 +2,5 @@
   "name": "qibi-api",
   "version": "1.0.0",
   "private": true,
-  "description": "奇笔 AI API Proxy — Vercel Serverless Functions",
-  "dependencies": {
-    "@vercel/kv": "^1.0.1"
-  }
+  "description": "奇笔 AI API Proxy — Vercel Serverless Functions"
 }

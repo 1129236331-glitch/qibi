@@ -1,9 +1,7 @@
 /**
  * 奇笔 AI — DeepSeek API 代理 (Edge Runtime)
- * 从 Vercel KV 读取 Key，转发请求到 DeepSeek，支持 SSE 流式响应
+ * 从环境变量读取 Key，转发请求到 DeepSeek，支持 SSE 流式响应
  */
-
-import { kv } from '@vercel/kv';
 
 const DEEPSEEK_API = 'https://api.deepseek.com/v1/chat/completions';
 
@@ -12,15 +10,10 @@ export const config = {
 };
 
 export default async function handler(request) {
-  // Handle CORS preflight
   if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 204,
-      headers: corsHeaders(),
-    });
+    return new Response(null, { status: 204, headers: corsHeaders() });
   }
 
-  // Only allow POST
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
@@ -28,10 +21,9 @@ export default async function handler(request) {
     });
   }
 
-  // Read API key from KV
-  const apiKey = await kv.get('deepseek_api_key');
+  const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: 'API Key 未配置，请联系管理员' }), {
+    return new Response(JSON.stringify({ error: 'API Key 未配置，请在管理后台设置' }), {
       status: 503,
       headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
     });
@@ -40,7 +32,6 @@ export default async function handler(request) {
   try {
     const body = await request.json();
 
-    // Forward to DeepSeek
     const deepseekResp = await fetch(DEEPSEEK_API, {
       method: 'POST',
       headers: {
@@ -50,7 +41,6 @@ export default async function handler(request) {
       body: JSON.stringify(body),
     });
 
-    // Handle API errors
     if (!deepseekResp.ok) {
       const errText = await deepseekResp.text();
       let errMsg = `DeepSeek API 错误 (${deepseekResp.status})`;
@@ -58,20 +48,18 @@ export default async function handler(request) {
       if (deepseekResp.status === 429) errMsg = '请求过于频繁，请稍后再试';
       if (deepseekResp.status === 402) errMsg = 'API 额度不足，请在管理后台更换 Key';
 
-      return new Response(JSON.stringify({ error: errMsg, raw: errText }), {
+      return new Response(JSON.stringify({ error: errMsg }), {
         status: deepseekResp.status,
         headers: { ...corsHeaders(), 'Content-Type': 'application/json' },
       });
     }
 
-    // Stream the SSE response back
     return new Response(deepseekResp.body, {
       status: 200,
       headers: {
         ...corsHeaders(),
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
       },
     });
   } catch (err) {
