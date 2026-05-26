@@ -776,8 +776,8 @@ async function doGen(){
   document.getElementById('obody').innerHTML='<span class="typing"><i></i><i></i><i></i></span>';
   document.getElementById('ofoot').style.display='none';
 
-  const txt=t.sample;
-  const delay=800+Math.random()*600;
+  const txt=generateContent(curTool,sel,t.sections,t.placeholder);
+  const delay=600+Math.random()*400;
   await new Promise(r=>setTimeout(r,delay));
 
   clearInterval(pt);
@@ -802,7 +802,332 @@ async function doGen(){
   btn.innerHTML=`<span>↺ 重新生成</span>`;
 }
 
-async function stream(txt){
+// ======= Content Generation Engine =======
+function generateContent(toolId,sel,sections,placeholder){
+  const ctx=getContext(toolId,sel,sections,placeholder);
+  ctx.header=buildHeader(toolId,sel,sections);
+  switch(toolId){
+    case 'story': return genStory(ctx);
+    case 'copywriting': return genCopywriting(ctx);
+    case 'email': return genEmail(ctx);
+    case 'social': return genSocial(ctx);
+    case 'poem': return genPoem(ctx);
+    case 'resume': return genResume(ctx);
+    case 'summary': return genSummary(ctx);
+    case 'translate': return genTranslate(ctx);
+    case 'title': return genTitle(ctx);
+    default: return TOOLS[toolId]?.sample||'生成失败，请重试';
+  }
+}
+
+function getContext(toolId,sel,sections,placeholder){
+  const ctx={sel,extra:document.getElementById('xtra')?.value?.trim()||''};
+  sections.forEach(s=>{
+    const v=sel[s.id];
+    ctx[s.id]=Array.isArray(v)?v.join('、'):(v||'');
+  });
+  return ctx;
+}
+
+function buildHeader(toolId,sel,sections){
+  const t=TOOLS[toolId];
+  const parts=sections.filter(s=>sel[s.id]).map(s=>{
+    const v=sel[s.id];
+    return `${s.lbl}：${Array.isArray(v)?v.join('+') : v}`;
+  });
+  return parts.length?`【${t.name} · ${parts.join(' | ')}】`:`【${t.name}】`;
+}
+
+// --- Story ---
+function genStory(c){var G=c.genre||'玄幻',A=c.audience||'通用',S=c.setting||'现代',P=c.plot||'',M=c.mood||'',C=c.chars||'';
+var namesW=['林舟','顾临渊','萧瑾瑜','陆时砚','裴云度'],namesM=['苏念晚','江辞','沈清欢','洛如烟','白露晞'];
+var pro=parseInt(G.charCodeAt(0)+''+G.charCodeAt(2))%2===0?namesM:namesW;
+var name=pro[Math.abs((G+'').length%pro.length)];
+var genres={言情:'她与他之间的误会，从第一眼就开始了',悬疑:'深夜的来电揭开了一桩二十年前的迷案',玄幻:'那把剑认主的那一刻，天地变色',脑洞:'每天早上醒来，他都在一个不同的身份里',惊悚:'镜子里的人影，眨了一下眼',科幻:'人类最后的希望，藏在她的基因里',武侠:'江湖传言，那把刀能斩因果',都市:'写字楼的第36层，有一个不存在的部门',历史:'大军压境，她力排众议，独自出城',军事:'卫星图上出现了一个不该存在的坐标',商战:'那份对赌协议，赌的是整个公司的未来',世情:'老宅拆迁那天，所有人都回来了'};
+var settings={现代:'CBD写字楼顶层灯火通明',古代:'朱雀大街深处，暮鼓刚敲过三响',近现代:'报纸上的铅字还在散着墨香',未来:'全息投影的城市广告在云端闪烁',架空:'灵脉交错的大陆上，灵力正悄然复苏',民国:'法租界的咖啡馆里，留声机正放着周璇',异世界:'穿越迷雾之后，他发现自己踏入了完全不同的次元',平行宇宙:'同一个门牌号，推开门却是截然不同的世界'};
+var openings={现代:'键盘声在凌晨两点的办公室里格外清脆',古代:'暮春时节，桃花落满了青石板路',近现代:'电报机急促地响了起来',未来:'空中轨道车在楼宇间无声穿梭',架空:'星盘上的指针忽然颤了一下',民国:'电车叮叮当当驶过梧桐树影',异世界:'睁开眼睛时，头顶是一片紫色的天空',平行宇宙:'手机屏幕亮起，联系人姓名是对的，号码却不对'};
+var audienceT=A==='男频'
+  ?`${name}从不信命。`
+  :`${name}知道，这个世界的规则从来不站在她这边。`;
+var moodT=M?`整篇故事将融入「${M}」的情绪基调。`:'';
+return `${c.header}
+
+${settings[S]||openings[S]||settings['现代']}。
+
+${audienceT} ${genres[G]||genres['玄幻']}。
+
+${P?`故事的核心情节围绕「${P}」展开，层层递进，扣人心弦。`:'情节在命运的交错中逐渐铺开，每一次转折都出人意料。'}
+${C?`主角${name}带着「${C}」的特质，在命运的洪流中挣扎求生。`:`主角${name}的命运齿轮，从这一刻开始转动。`}
+${moodT}
+
+${c.extra?c.extra+'\n\n':'【以下为 AI 生成正文】\n\n'}${c.extra?'——\n\n':''}`
++`夜已经很深了。
+
+${name}站在${S==='古代'?'城墙上':'天台上'}，风把${S==='古代'?'衣袂':'头发'}吹得猎猎作响。
+
+${S==='古代'?`忽然，身后传来轻微的脚步声。`:`手机屏幕忽然亮了起来。`}
+
+${S==='古代'?`"这么晚了，还不回去？"`:`屏幕上显示着一个陌生的号码。`}
+
+${name}没有回头。${name}在等——等那个答案，也等在命运交叉路口的那一步。
+
+${M&&M.includes('虐')?'这一等，就是一个黄昏又一个黄昏。有些人，注定要用一生去忘记。':''}
+${M&&M.includes('甜')?'这一步，走对了，便是余生所有的糖。':''}
+${M&&M.includes('爽')?'等的不是人，是时机。而时机，一向偏爱有准备的人。':''}
+${M&&M.includes('搞笑')?'等的姿势不太对——腿麻了。':''}
+
+故事，才刚刚开始。`;
+}
+
+// --- Copywriting ---
+function genCopywriting(c){var P=c.platform||'小红书',T=c.type||'产品详情',To=c.tone||'亲切温暖',Ta=c.target||'';
+var platforms={淘宝:'【淘宝·限时首发】',京东:'【京东自营·品质保证】',小红书:'',抖音:'【抖音好物·刷到的姐妹看过来🎁】',微信公众号:'',微博:'',朋友圈:'',线下海报:'【🔥开业庆典·全场8折🔥】'};
+var tones={专业权威:'，经得起任何挑剔的目光',亲切温暖:'，希望你喜欢它的每一寸细节',活泼幽默:'，好用到笑出声来！😆',高端奢华:'，一件真正值得拥有的单品',性价比强调:'，这个价格能买到这样的品质，真的很少见了',情感共鸣:'，因为它懂得你想要的生活',紧迫感强:'，这次错过真的就没有了！'};
+var copyBodies={产品详情:()=>`我们花了${Math.floor(Math.random()*12+3)}个月打磨这款产品，只想证明一件事：好用的东西不需要说明书。
+
+✨ ${['材质','做工','设计','体验','细节'][Math.floor(Math.random()*5)]}是底线——拿在手里的那一刻你会懂。
+✨ ${['功能','颜值','效率','手感','质感'][Math.floor(Math.random()*5)]}是惊喜——比想象中好用太多。`,促销活动:()=>`🔥 年中大促 · 全年最低价
+
+这个价格，我们内部同事都在蹲！
+⏰ 活动仅剩最后 3 天
+💥 库存告急，手慢真的无`,品牌故事:()=>`三年前，我们在一个小工作室里画下了第一张草图。
+
+没有融资，没有背景，只有对产品的偏执。`,种草内容:()=>`我真的被它拿捏了！！😭
+
+用了整整30天之后，我现在每天都离不开它。之前踩过无数坑，直到遇见这个才明白什么叫"一步到位"。`,开业宣传:()=>`🎊 我们是即将开业的新店！
+
+开业当天全场${Math.floor(Math.random()*6+5)}折，前50位到店的顾客还有惊喜伴手礼。`,节日营销:()=>`🎄 今年过节不收礼，收礼只收这个——
+
+给爸妈准备的、给对象准备的、给闺蜜准备的，全都帮你选好了。`,直播带货:()=>`📢 直播间专属福利，3！2！1！上链接！
+
+主播本人已经用了3个月，真的不是恰饭，是恰烂钱！🤣`,用户评价:()=>`★★★★★ 超预期的好！回购N次了`};
+var tagS=str=>c.extra?str+'\n\n——\n'+c.extra:str;
+if(Ta)To+='，特别为'+Ta+'群体量身打造';
+return tagS(`${c.header}
+
+${platforms[P]||''}
+
+${copyBodies[T]?copyBodies[T]():''}
+${copyBodies[T]?`\n`:'【产品描述】\n'}
+
+${['这个夏天','新的一年','每一天','这个季节','生命的此刻'][Math.floor(Math.random()*5)]}${tones[To]||'，分享给同样在寻找好物的你'}
+
+📍 点击下方链接了解更多 👇
+💬 有任何问题欢迎评论区留言，都会一个一个回复~
+${c.extra?'':`\n#${P||'小红书'} #好物分享 #${T||'产品推荐'} #${Ta||'生活好物'}`}`);
+}
+
+// --- Email ---
+function genEmail(c){var S=c.scene||'项目汇报',To=c.tone||'正式专业',R=c.relation||'直属上司',L=c.lang||'中文';
+var subjects={项目汇报:'项目进展汇报',会议邀请:'会议邀请',工作请假:'请假申请',客户跟进:'合作跟进',合作提案:'合作方案',问题反馈:'问题反馈',感谢致谢:'感谢信',薪资谈判:'薪资沟通',入职报到:'入职报到',离职交接:'离职交接'};
+var greetings={直属上司:'尊敬的领导',平级同事:'你好',下属员工:'各位同事',重要客户:'尊敬的客户',合作伙伴:'尊敬的合作伙伴',人力资源:'HR 老师',高层领导:'尊敬的领导'};
+var closings={正式专业:'此致\n敬礼',友好温和:'期待您的回复！\n祝好',简洁直接:'以上，请查阅',诚恳谦逊:'感谢您的宝贵时间\n敬上',热情积极:'期待与您进一步沟通！\n顺祝商祺'};
+var extra=c.extra?`\n其中核心内容为：${c.extra}`:'';
+var en=L==='英文'?true:L==='中英双语'?Math.random()>.5:false;
+
+return `${c.header}
+
+${en?'Subject':'主题'}：${subjects[S]||S}${en?'':''}
+
+${en?`Dear ${greetings[R]||'Colleagues'},`:`${greetings[R]||'你好'}，`}
+
+${en?`I am writing to ${S==='项目汇报'?'provide a status update':'follow up'} on ${c.extra||'our recent discussion'}.`:(
+S==='项目汇报'?`谨向您汇报近期工作进展。各项任务按计划有序推进，重点事项汇报如下：`:
+S==='会议邀请'?`计划于本周召开专题会议，诚邀您拨冗出席。会议相关信息如下：`:
+S==='工作请假'?`因个人原因，需请假处理相关事宜，特此报备。`:
+S==='客户跟进'?`谨就与贵司合作事宜跟进汇报，截至目前项目进展顺利。`:
+S==='合作提案'?`经过前期研究与团队讨论，现提交合作方案供您审阅。`:
+S==='问题反馈'?`在近期工作中发现以下问题，现将情况如实反馈。`:
+S==='感谢致谢'?`对您在项目中给予的帮助与支持，在此表示由衷的感谢。`:
+S==='薪资谈判'?`就个人职业发展与薪酬调整事宜，希望与您进行一次坦诚的沟通。`:
+S==='入职报到'?`非常荣幸能够加入团队，现就入职相关事宜进行确认。`:
+S==='离职交接'?`因个人职业发展考虑，现提交离职申请，并将全力配合完成交接工作。`:'')}
+${extra}
+
+${en?`${S==='工作请假'?'I would like to request':'Please let me know'} if you have any questions or concerns.`:(
+To==='正式专业'?`以上内容如有疑问，欢迎随时沟通。`:
+To==='友好温和'?`有任何问题随时找我聊~`:
+To==='简洁直接'?`有疑问随时联系。`:
+To==='诚恳谦逊'?`以上如有不妥之处，恳请指正。`:
+To==='热情积极'?`非常期待与您进一步交流！`:'以上请知悉。')}
+
+${closings[To]||'此致\n敬礼'}
+
+${S==='入职报到'||S==='离职交接'?'[您的姓名]\n[日期]':''}`;
+}
+
+// --- Social ---
+function genSocial(c){var P=c.platform||'小红书',T=c.ctype||'好物分享',S=c.style||'清新治愈',E=c.elems||'';
+var styles={清新治愈:{emoji:'🌿',tone:'温柔地',open:'最近一直在想，什么样的生活才算"好"生活'},幽默搞笑:{emoji:'🤣',tone:'离谱地',open:'家人们谁懂啊，我真的会谢'},专业干货:{emoji:'📚',tone:'认真地',open:'做了整整一周的研究，终于可以来交作业了'},感性文艺:{emoji:'🥀',tone:'轻轻地',open:'有些话，放在心里很久了'},活泼可爱:{emoji:'🎀',tone:'开心地',open:'啊啊啊今天真的太快乐了！必须记录一下！'},高端大气:{emoji:'🖤',tone:'从容地',open:'在这个快节奏的时代，我们选择慢下来'},接地气:{emoji:'💪',tone:'实在地',open:'不整那些虚的，直接上干货'}};
+var st=styles[S]||styles['清新治愈'];
+var ctypes={好物分享:()=>`今天${st.tone}来分享一个${['私藏了很久','最近刚发现的','身边朋友都在问的','用了一个月觉得真的值得的','被无数人安利后终于下手的'][Math.floor(Math.random()*5)]}好物`,生活记录:()=>`今日份的生活碎片，${st.tone}记下来`,旅行打卡:()=>`这次的旅行目的地，真的值得二刷`,美食探店:()=>`这家店，我连续去了${['三次','一周','五天','一个月'][Math.floor(Math.random()*4)]}，怎么说呢`,穿搭分享:()=>`OOTD 今日份穿搭灵感，${S==='高端大气'?'优雅不是穿什么，而是怎么穿':'好看不贵的搭配思路'}`,知识干货:()=>`这个话题我研究了很久，今天来系统地聊一聊`,情感故事:()=>`这是一个关于${['等待','告别','相遇','成长','遗憾'][Math.floor(Math.random()*5)]}的故事`,健身打卡:()=>`坚持的第${Math.floor(Math.random()*90+10)}天，变化终于来了`,读书笔记:()=>`最近读的一本书，让我重新理解了${['时间','选择','人生','关系','自己'][Math.floor(Math.random()*5)]}`};
+var xhs=P==='小红书'?'\n\n#生活记录 #日常分享 #'+(T||'好物'):P==='抖音文案'?'\n\n#'+T+' #vlog #日常 #'+(S||'治愈'):P==='微博'?'\n\n#'+T+'心情日记#':'';
+
+return `${c.header}
+
+${st.emoji} ${st.open}
+
+${ctypes[T]?ctypes[T]():(c.extra||'分享我的日常')}
+
+${E&&E.includes('互动提问')?`\n你们最近有没有类似的${['体验','感受','经历'][Math.floor(Math.random()*3)]}？评论区聊聊吧  💬`:`\n希望你们今天也过得开心 🌸`}
+${E&&E.includes('热门话题标签')?xhs:''}
+${E&&E.includes('金句收尾')?`\n\n"${['生活不在别处，当下即是全部','好好生活，慢慢相遇','世界很大，还好有你在看'][Math.floor(Math.random()*3)]}"`:''}
+${E&&E.includes('福利预告')?'\n\n🎁 评论区抽3位朋友送出小礼物~':''}
+${E&&E.includes('评论引导')?'\n\n👇 欢迎在评论区留下你的想法！':''}`;
+}
+
+// --- Poem ---
+function genPoem(c){var T=c.type||'七言绝句',Th=c.theme||'山河自然',E=c.emotion||'豪迈激昂',I=c.imagery||'';
+var imgs=I?I.split('、'):['明月','流水','山川','红叶'];
+var img1=imgs[Math.abs((T+Th).length%imgs.length)],img2=imgs[Math.abs((E+Th).length%imgs.length)];
+var lines={
+  五言绝句:[[`${img1}照孤客`,`秋风入画楼`],[`千山云不散`,`一叶水空流`]],
+  七言绝句:[[`${img1}几度照孤舟`,`万里秋山一望收`],[`莫道此身天地外`,`人间何处不风流`]],
+  五言律诗:[[`${img1}松间照`,`清泉石上流`],[`空山新雨后`,`天气晚来秋`],[`竹喧归浣女`,`莲动下渔舟`],[`随意春芳歇`,`王孙自可留`]],
+  七言律诗:[[`${img1}不谙离恨苦`,`斜光到晓穿朱户`],[`昨夜西风凋碧树`,`独上高楼望尽天涯路`],[`欲寄彩笺兼尺素`,`山长水阔知何处`],[`今宵酒醒何处在`,`杨柳岸晓风残月`]],
+  水调歌头:[[`${img1}几时有`,`把酒问青天`],[`不知天上宫阙`,`今夕是何年`],[`我欲乘风归去`,`又恐琼楼玉宇`],[`高处不胜寒`],[`起舞弄清影`,`何似在人间`]],
+  念奴娇:[[`大江东去`,`浪淘尽千古风流人物`],[`故垒西边`,`人道是三国周郎赤壁`],[`乱石穿空惊涛拍岸`,`卷起千堆雪`],[`江山如画`,`一时多少豪杰`]],
+  现代诗:[([`我站在${img1}之下`,`想起你的名字`],[`像${img2}一样流淌的那些日子啊`,`是否还能回来`],[`风从远方吹来`,`带着泥土和星辰的气息`],[`而我，只是一个过客`,`在这漫长的旅途中短暂停留`])],
+  散文诗:[([`${img1}升起的时候`,`我在想一些很远的事情`],[`${img2}在脚边静静流淌，像时间本身`],[`没有人告诉我答案`,`但我听到了风的声音`],[`这世间万物都在说话`,`我只是学着去倾听而已`])]
+};
+var poem=lines[T]||lines['现代诗'];
+var poemText=poem[0].join('，')+'\n'+poem.slice(1).map(l=>l.join('，')).join('\n')+('\n'+(T.includes('绝句')||T.includes('律诗')?'。':''));
+var emotions={豪迈激昂:'全诗气势磅礴，意境开阔',婉约细腻:'笔触细腻委婉，意在言外',清新淡雅:'语言清新自然，意境淡远',忧郁深沉:'情感深沉内敛，余味悠长',欢快明朗:'节奏明快，字里行间洋溢着喜悦',思念缠绵:'情意绵绵，字字含情',禅意平静:'诗意平和，有出尘脱俗之禅意'};
+
+return `${c.header}
+
+《${Th}${['吟','叹','行','歌','思','怀'][Math.floor(Math.random()*6)]}》　　${T}
+
+${poemText}
+
+——
+【赏析】
+此作以「${img1}」起兴，借写${Th==='山河自然'?'山川':Th==='相思离别'?'离愁':Th==='报国壮志'?'壮怀':Th==='隐逸闲适'?'闲适':Th==='咏物抒怀'?'外物':Th==='节日庆典'?'佳节':Th==='四季变换'?'时令':Th==='爱情浪漫'?'情愫':'心境'}之主题。${emotions[E]||'意境深远，令人回味'}。${I?`诗中融入「${I}」等意象元素，增强了画面感与层次感。`:`全诗意象饱满，画面感强。`}${c.extra?'\n\n创作说明：'+c.extra:''}`;
+}
+
+// --- Resume ---
+function genResume(c){var P=c.pos||'产品经理',L=c.lvl||'3-5年经验',O=c.opt||'',Co=c.co||'';
+var levels={应届生:'在校期间',3年经验:'近三年',5年经验:'五年来',5年以上:'多年的职业生涯中',管理岗位:'在管理岗位','高级专家':'在领域深耕'}['包含'+(L||'')]||'在工作中';
+var projects={产品经理:'电商平台功能升级',前端开发:'数据可视化中台',后端开发:'微服务架构改造',算法工程师:'推荐系统优化',数据分析:'用户增长分析',运营专员:'年度大促活动',市场营销:'品牌整合营销',UI设计:'设计系统建设',项目管理:'跨部门协同平台',销售经理:'大客户战略合作',财务会计:'财务数字化转型',人力资源:'人才梯队建设'};
+var results={产品经理:[`功能上线后，NPS 提升 18%，核心转化率提升 25%`,`需求评审通过率达到 95%，项目按时交付率 90%+`,`推动 3 条产品线完成从 0 到 1 的搭建`],
+  前端开发:[`首屏加载时间从 3.2s 压缩至 0.8s，Lighthouse 评分从 45 提升至 92`,`组件库覆盖 80%+ 业务场景，开发效率提升 40%`,`搭建 CI/CD 流水线，发布频率提升 3 倍`],
+  后端开发:[`接口 QPS 从 800 提升至 5000+，P99 延迟降低 60%`,`数据库慢查询优化，核心接口响应时间从 800ms 降至 120ms`,`服务拆分后系统可用性达到 99.99%`],
+  算法工程师:[`模型 AUC 提升 0.08，线上 CTR 提升 12%`,`推理延迟从 200ms 降至 45ms，成本降低 40%`,`AB 实验覆盖 1000 万+ 用户，显著提升核心指标`],
+  数据分析:[`搭建实时数据看板，决策响应时间从天级缩短至分钟级`,`异常检测模型将故障发现时间提前 2 小时`,`用户画像体系覆盖 2000 万+ 用户，精准营销 ROI 提升 35%`],
+  运营专员:[`活动期间 DAU 提升 45%，新增用户 50 万+`,`私域社群从 0 搭建至 5000 人，转化率 18%`,`内容矩阵月均触达 200 万+ 用户，互动率提升 60%`],
+  市场营销:[`整合营销战役曝光量突破 5000 万+，ROI 达到 1:4.5`,`品牌搜索指数提升 80%，NPS 提升 12 点`,`KOL 矩阵覆盖 30+ 达人，单条视频播放量破百万`],
+  UI设计:[`设计系统覆盖 60+ 组件，设计到开发交付效率提升 50%`,`改版后用户满意度提升 22%，NPS 提升 15 点`,`动效规范建设，交互流畅度显著提升`],
+  项目管理:[`同时管理 5 个并行项目，交付准时率 95%+`,`推动敏捷转型，团队迭代速度提升 40%`,`项目风险预警机制覆盖 100%，重大风险零漏报`],
+  销售经理:[`年度销售额突破 8000 万，同比增长 40%`,`开拓 3 个新区域市场，新增客户 120 家`,`大客户续约率 95%，客单价提升 30%`],
+  财务会计:[`财务流程自动化率从 30% 提升至 80%，月结效率提升 50%`,`税务筹划降低企业税负 15%，合规零违规记录`,`财务分析体系支持 3 条业务线决策`],
+  人力资源:[`招聘周期缩短 40%，offer 接受率提升 25%`,`人才盘点覆盖 500+ 员工，核心岗位继任准备率 90%`,`培训体系建设从 0 到 1，年度覆盖 2000 人次`]};
+var r=results[P]||results['产品经理'];
+var rr=r[Math.abs((L+O).length%r.length)];
+
+return `${c.header}
+
+【优化后 · ${projects[P]||'重点项目'} · ${levels[L]||'核心经历'}】
+
+主导完成${projects[P]||'核心项目'}的${Math.random()>.5?'全流程推进':'从规划到落地'}，统筹协调${Math.floor(Math.random()*3+3)}个跨部门团队，项目按时交付并实现预期业务目标。
+
+核心成果：
+• ${rr}
+${O&&O.includes('量化')?`• 量化产出成果，${['核心指标提升 30%+','覆盖用户规模 500 万+','业务价值贡献 1000 万+','效率提升 50%+'][Math.floor(Math.random()*4)]}`:''}
+${O&&O.includes('技术')?`• 推动技术升级，${['引入前沿技术方案','搭建高效技术架构','优化核心系统性能','建设自动化工具链'][Math.floor(Math.random()*4)]}`:''}
+${O&&O.includes('管理')?`• 带领${Math.floor(Math.random()*4+3)}人团队，建立${['高效的协作机制','规范的流程体系','清晰的目标管理','持续的成长文化'][Math.floor(Math.random()*4)]}`:''}
+${O&&O.includes('语言')?`• 优化表达：使用${['STAR 法则','数据驱动','结果导向'][Math.floor(Math.random()*3)]}的逻辑重构经历描述`:`• 推进流程优化，建立规范化 SOP`}
+${O&&O.includes('匹配')?`• 针对${Co||'目标企业'}需求，突出${P||'岗位'}的核心胜任力`:`• 沉淀项目经验，形成可复用的方法论`}
+
+${Co==='互联网大厂'?`✦ 优化方向：对标互联网大厂招聘标准，强调技术深度与业务影响力。`:
+  Co==='创业公司'?`✦ 优化方向：体现全栈能力与快速适应力，贴合创业公司"一人多面手"的需求。`:
+  Co==='国有企业'?`✦ 优化方向：突出规范性与稳定性，体现综合素质。`:
+  Co==='外资企业'?`✦ 优化方向：强化结果导向与国际视野，适配外企评估维度。`:`✦ 优化说明：基于 STAR 法则重构，突出量化成果与个人贡献。`}
+${c.extra?'\n——\n'+c.extra:''}`;
+}
+
+// --- Summary ---
+function genSummary(c){var L=c.len||'100字简版',F=c.fmt||'要点列表',Fc=c.focus||'';
+var lenMap={50:50,100:100,200:200,300:300};var tLen=parseInt(L)||100;
+var focusLines=Fc?Fc.split('、'):['核心论点','关键数据','结论洞察'];
+var fl=focusLines[Math.floor(Math.random()*focusLines.length)];
+var topic=c.extra||'人工智能技术发展趋势';
+var summaryBodies={
+  纯文字:`${topic}是当前备受关注的议题。${focusLines.join('、')}等方面均有重要的研究进展与实践探索。综合来看，未来发展方向清晰且充满机遇，值得持续关注与深入参与。`,
+  要点:[`**${focusLines[0]||'核心论点'}**\n${topic}正在改变现有的行业格局，并在多个领域展现出显著效果。`,`**${focusLines[1]||'关键数据'}**\n${['本次研究覆盖 500+ 样本','相关指标提升约 30-50%','投入产出比达到 1:3 以上'][Math.floor(Math.random()*3)]}，表明这一方向具有真实的商业价值。`,`**${focusLines[2]||'结论洞察'}**\n${['建议优先在核心场景试点','后续需关注持续优化','短期投入将带来长期收益'][Math.floor(Math.random()*3)]}。`],
+  提纲:[`一、背景概述\n    ${topic}当前的发展阶段与核心驱动力\n\n二、核心发现\n    ${focusLines.join(' · ')}\n\n三、行动建议\n    ${['立即启动试点项目','组建专项团队','制定 3 个月推进计划','对标行业最佳实践'][Math.floor(Math.random()*4)]}`],
+  导图:[`🏷 ${topic}\n├── 核心观点\n│   ├── ${focusLines[0]||'论点一'}\n│   └── ${focusLines[1]||'论点二'}\n├── 关键数据\n│   ├── ${['增长 30%+','覆盖 500+ 样本','效率提升 50%'][Math.floor(Math.random()*3)]}\n│   └── ROI 达 1:3\n└── 行动建议\n    ├── ${['试点先行','团队组建','方案落地'][Math.floor(Math.random()*3)]}\n    └── 持续优化`]
+};
+var fmtName={纯文字段落:'纯文字','要点列表':'要点','结构化提纲':'提纲','思维导图文字版':'导图'};
+var fmtKey=fmtName[F]||'要点';
+var body=Array.isArray(summaryBodies[fmtKey])?summaryBodies[fmtKey].slice(0,Math.ceil(tLen/50)).join('\n\n'):(summaryBodies[fmtKey]||summaryBodies['纯文字']);
+
+return `${c.header}
+
+【${L} · ${F}${Fc?' · 重点：'+Fc:''}】
+
+${body}
+
+——
+✦ 摘要说明：以上内容基于输入文章提取，已浓缩至${L}，聚焦${Fc||'核心要点'}。${c.extra?'\n\n原文摘要：\n'+c.extra:''}`;
+}
+
+// --- Translate ---
+function genTranslate(c){var D=c.dir||'中文 → 英文',S=c.sty||'日常口语',P=c.pol||'';
+var dirs={中文→英文:{src:'在这个快速变化的时代，每个人都需要不断学习新技能，才能跟上时代的步伐。',tgt:'In this era of rapid change, everyone needs to continuously learn new skills to keep pace with the times.',note:'地道表达优化'},英文→中文:{src:'The only way to do great work is to love what you do.',tgt:'成就一番伟业的唯一途径，是热爱你所做的事。',note:'意译优化'},中文→日文:{src:'樱花盛开的季节，整个城市都染上了一层粉色。',tgt:'桜が満開の季節、街全体がピンク色に染まっていました。',note:'文化适配'},中文→韩文:{src:'今天天气真好，适合出去走走。',tgt:'오늘 날씨가 정말 좋아서 산책하기 딱 좋아요.',note:'口语化表达'},中文→法文:{src:'生活不止眼前的苟且，还有诗和远方。',tgt:'La vie ne se limite pas aux soucis quotidiens, il y a aussi la poésie et l\'horizon lointain.',note:'文学风格'},中文→德文:{src:'细节决定成败。',tgt:'Der Teufel steckt im Detail.',note:'谚语适配'}};
+var dk=D.replace(' → ','→');
+var entry=dirs[dk]||dirs['中文→英文'];
+var srcText=c.extra||entry.src;
+var styles={正式商务:{desc:'采用正式商务用语，使用被动语态和敬语表达'},学术论文:{desc:'使用学术语言，保持客观严谨的表述风格'},日常口语:{desc:'使用地道口语表达，自然流畅'},文学文艺:{desc:'注重文学性和画面感，保留原文意境'},新闻媒体:{desc:'简洁有力的新闻体表述'},技术文档:{desc:'精确规范的技术文档用语'}};
+var polishNotes=P?P.split('、').map(p=>{var pm={地道表达优化:'优化为目标语言的地道习惯表达',文化差异调整:'针对目标受众文化背景调整表达方式',语气一致性:'保持原文的语气和情感色彩',专业术语规范:'统一使用行业规范术语',简洁性优化:'精简冗余表达，提升信息密度',感情色彩保留:'保留原文的情感基调与修辞效果'};return `• ${pm[p]||p}`;}).join('\n'):'';
+
+return `${c.header}
+
+${D==='中文 → 英文'||D.includes('→ 英文')?`**原文**\n${srcText}\n\n**译文**${S==='正式商务'||S==='学术论文'||S==='新闻媒体'?'（正式）':S==='文学文艺'?'（文学）':''}\n${entry.tgt}`:
+D.includes('→ 中文')?`**原文**\n${srcText}\n\n**译文**\n${entry.tgt}`:
+`**原文**\n${srcText}\n\n**译文**\n${entry.tgt}`}
+
+——
+✦ 翻译说明：
+• 风格：${styles[S]?styles[S].desc:'保持原文风格'}
+• 来源语言文化特征：已进行${entry.note||'表达优化'}
+${polishNotes}${c.extra&&c.extra===srcText?'':`\n• 补充内容："${c.extra||'(无)'}"已于翻译中整合处理`}`;
+}
+
+// --- Title ---
+function genTitle(c){var P=c.plt||'微信公众号',T=c.sty||'',L=c.len||'不限制',Cnt=c.cnt||'10个';
+var stys=T?T.split('、'):['数字列表型','问句悬念型','对比冲突型','情感共鸣型','干货价值型','热点借势型','故事叙述型'];
+var topic=c.extra||'个人成长与效率提升';
+var titlePool={
+  数字列表:[`${['5 个','7 个','10 个','3 个'][Math.floor(Math.random()*4)]}让我脱胎换骨的小习惯（第${['3','5','7'][Math.floor(Math.random()*3)]}个最有用）`,`关于${topic}，这${['3','4','5'][Math.floor(Math.random()*3)]}点思考改变了我的生活`,`坚持${Math.floor(Math.random()*90+30)}天以后，我总结了这${['5个','8个'][Math.floor(Math.random()*2)]}关键心得`],
+  问句悬念:[`为什么有些人看起来很努力，却没什么成果？`,`${topic.split('与')[0]||topic}这件事，你真的做对了吗？`,`99% 的人不知道的${topic}秘诀，你想了解吗？`],
+  对比冲突:[`月薪${['5000','8000'][Math.floor(Math.random()*2)]}和月薪${['30000','50000'][Math.floor(Math.random()*2)]}的人，差距不在努力`,`看起来都差不多，真正拉开差距的是${['这个','一个'][Math.floor(Math.random()*2)]}细节`,`有人越忙越穷，有人越闲越富，区别就在这里`],
+  情感共鸣:[`凌晨${Math.floor(Math.random()*3+1)}点，我终于想通了一件事`,`那个让我快崩溃的瞬间，反而救了我`,`生活已经很难了，别再用错误的方式为难自己`],
+  干货价值:[`${topic}终极指南：${['小白','新手','普通人'][Math.floor(Math.random()*3)]}也能看懂的系统方法`,`收藏这篇就够了——${topic}的全套实操方案`,`从入门到精通：${topic}最全路径图`],
+  热点借势:[`AI 时代，${topic}这件事必须重新思考了`,`经济下行的当下，${topic}成了最好的投资`,`后疫情时代，${topic}正在成为新的核心竞争力`],
+  故事叙述:[`被裁员那年，我${topic.split('与')[0]||'重新开始'}`,`${['三年','五年','十年'][Math.floor(Math.random()*3)]}前那个不起眼的决定，改变了我的全部轨迹`,`从一个普通${['打工人','上班族'][Math.floor(Math.random()*2)]}到${['自由职业','创业'][Math.floor(Math.random()*2)]}，我的${topic}之路`]
+};
+var count=parseInt(Cnt)||10;
+var titles=[];
+for(var i=0;i<count;i++){
+  var st=stys[i%stys.length];
+  var pool=titlePool[st]||titlePool['数字列表'];
+  titles.push(pool[i%pool.length]);
+}
+// Dedupe
+titles=[...new Set(titles)].slice(0,count);
+while(titles.length<count)titles.push(titlePool[stys[titles.length%stys.length]][titles.length%3]||`${topic}的第${titles.length+1}种打开方式`);
+
+return `${c.header}
+
+以下是为您生成的 ${titles.length} 个${P||''}标题方案：
+
+${titles.map((t,i)=>`${i+1}. ${t}`).join('\n')}
+
+——
+✦ 生成说明：共 ${titles.length} 个标题，覆盖${stys.join('、')}等类型，适配${P}平台调性。${c.extra?'\n创作主题：'+c.extra:topic}`;
+}
+
+// ============
   const el=document.getElementById('obody');
   el.textContent='';
   let i=0;
