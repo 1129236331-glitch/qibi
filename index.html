@@ -1326,7 +1326,7 @@ ${poemText}
 
 // --- Resume ---
 function genResume(c){var P=c.pos||'产品经理',L=c.lvl||'3-5年经验',O=c.opt||'',Co=c.co||'';
-var levels={应届生:'在校期间',3年经验:'近三年',5年经验:'五年来',5年以上:'多年的职业生涯中',管理岗位:'在管理岗位','高级专家':'在领域深耕'}['包含'+(L||'')]||'在工作中';
+var levels={'应届生':'在校期间','3年经验':'近三年','5年经验':'五年来','5年以上':'多年的职业生涯中','管理岗位':'在管理岗位','高级专家':'在领域深耕'}['包含'+(L||'')]||'在工作中';
 var projects={产品经理:'电商平台功能升级',前端开发:'数据可视化中台',后端开发:'微服务架构改造',算法工程师:'推荐系统优化',数据分析:'用户增长分析',运营专员:'年度大促活动',市场营销:'品牌整合营销',UI设计:'设计系统建设',项目管理:'跨部门协同平台',销售经理:'大客户战略合作',财务会计:'财务数字化转型',人力资源:'人才梯队建设'};
 var results={产品经理:[`功能上线后，NPS 提升 18%，核心转化率提升 25%`,`需求评审通过率达到 95%，项目按时交付率 90%+`,`推动 3 条产品线完成从 0 到 1 的搭建`],
   前端开发:[`首屏加载时间从 3.2s 压缩至 0.8s，Lighthouse 评分从 45 提升至 92`,`组件库覆盖 80%+ 业务场景，开发效率提升 40%`,`搭建 CI/CD 流水线，发布频率提升 3 倍`],
@@ -1392,7 +1392,7 @@ ${body}
 
 // --- Translate ---
 function genTranslate(c){var D=c.dir||'中文 → 英文',S=c.sty||'日常口语',P=c.pol||'';
-var dirs={中文→英文:{src:'在这个快速变化的时代，每个人都需要不断学习新技能，才能跟上时代的步伐。',tgt:'In this era of rapid change, everyone needs to continuously learn new skills to keep pace with the times.',note:'地道表达优化'},英文→中文:{src:'The only way to do great work is to love what you do.',tgt:'成就一番伟业的唯一途径，是热爱你所做的事。',note:'意译优化'},中文→日文:{src:'樱花盛开的季节，整个城市都染上了一层粉色。',tgt:'桜が満開の季節、街全体がピンク色に染まっていました。',note:'文化适配'},中文→韩文:{src:'今天天气真好，适合出去走走。',tgt:'오늘 날씨가 정말 좋아서 산책하기 딱 좋아요.',note:'口语化表达'},中文→法文:{src:'生活不止眼前的苟且，还有诗和远方。',tgt:'La vie ne se limite pas aux soucis quotidiens, il y a aussi la poésie et l\'horizon lointain.',note:'文学风格'},中文→德文:{src:'细节决定成败。',tgt:'Der Teufel steckt im Detail.',note:'谚语适配'}};
+var dirs={'中文→英文':{src:'在这个快速变化的时代，每个人都需要不断学习新技能，才能跟上时代的步伐。',tgt:'In this era of rapid change, everyone needs to continuously learn new skills to keep pace with the times.',note:'地道表达优化'},'英文→中文':{src:'The only way to do great work is to love what you do.',tgt:'成就一番伟业的唯一途径，是热爱你所做的事。',note:'意译优化'},'中文→日文':{src:'樱花盛开的季节，整个城市都染上了一层粉色。',tgt:'桜が満開の季節、街全体がピンク色に染まっていました。',note:'文化适配'},'中文→韩文':{src:'今天天气真好，适合出去走走。',tgt:'오늘 날씨가 정말 좋아서 산책하기 딱 좋아요.',note:'口语化表达'},'中文→法文':{src:'生活不止眼前的苟且，还有诗和远方。',tgt:'La vie ne se limite pas aux soucis quotidiens, il y a aussi la poésie et l\'horizon lointain.',note:'文学风格'},'中文→德文':{src:'细节决定成败。',tgt:'Der Teufel steckt im Detail.',note:'谚语适配'}};
 var dk=D.replace(' → ','→');
 var entry=dirs[dk]||dirs['中文→英文'];
 var srcText=c.extra||entry.src;
