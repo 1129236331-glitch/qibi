@@ -477,16 +477,27 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 <div class="modal-overlay" id="api-modal" style="display:none" onclick="if(event.target===this)closeModal('api-modal')">
   <div class="modal">
     <div class="modal-hdr">
-      <span class="modal-title">⚙ API Key 设置（可选）</span>
+      <span class="modal-title">🔑 配置免费 AI 额度</span>
       <button class="modal-close" onclick="closeModal('api-modal')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="modal-desc"><strong>不填 Key 也能用！</strong> 当前默认使用内置模板生成内容。<br>填了 DeepSeek API Key 后，AI 会实时创作原创内容，效果更好。</div>
-      <input class="modal-input" id="api-key-input" type="password" placeholder="粘贴 DeepSeek API Key（以 sk- 开头）">
-      <div class="modal-help">
-        <a href="https://platform.deepseek.com/api_keys" target="_blank">如何获取免费 API Key？→</a>
+      <div class="modal-desc" style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px;margin-bottom:16px;">
+        <strong>💡 DeepSeek 新用户免费赠送约 500 万 token 额度</strong><br>
+        <span style="font-size:13px;color:#555;">足够生成数千篇文章，用完可随时充值（价格极低）</span>
       </div>
-      <div class="modal-warn">⚠️ Key 仅保存在你的浏览器中，不会上传。不要在公共电脑上保存。</div>
+      <div style="margin-bottom:14px;">
+        <div style="font-weight:600;margin-bottom:8px;font-size:14px;">三步获取免费 Key：</div>
+        <div style="font-size:13px;color:#555;line-height:2;">
+          <span style="display:inline-block;width:22px;height:22px;background:var(--p50);color:#fff;border-radius:50%;text-align:center;line-height:22px;font-size:12px;margin-right:6px;">1</span> 打开 <a href="https://platform.deepseek.com/" target="_blank" style="color:var(--p50);font-weight:600;">platform.deepseek.com</a>，手机号注册<br>
+          <span style="display:inline-block;width:22px;height:22px;background:var(--p50);color:#fff;border-radius:50%;text-align:center;line-height:22px;font-size:12px;margin-right:6px;">2</span> 进入 <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:var(--p50);font-weight:600;">API Keys 页面</a>，点击「创建 API Key」<br>
+          <span style="display:inline-block;width:22px;height:22px;background:var(--p50);color:#fff;border-radius:50%;text-align:center;line-height:22px;font-size:12px;margin-right:6px;">3</span> 复制 Key（以 sk- 开头），粘贴到下方输入框
+        </div>
+      </div>
+      <button onclick="window.open('https://platform.deepseek.com/','_blank')" style="width:100%;padding:10px;border:2px dashed var(--p50);border-radius:8px;background:#faf5ff;color:var(--p50);font-weight:600;cursor:pointer;margin-bottom:14px;font-size:14px;">
+        🚀 一键前往注册（新用户免费）
+      </button>
+      <input class="modal-input" id="api-key-input" type="password" placeholder="粘贴 DeepSeek API Key（以 sk- 开头）">
+      <div class="modal-warn" style="margin-top:8px;">⚠️ Key 仅保存在你的浏览器本地，不会上传到任何服务器。不要在公共电脑上保存。</div>
     </div>
     <div class="modal-footer">
       <button class="modal-btn modal-btn-cancel" onclick="closeModal('api-modal')">暂不配置</button>
