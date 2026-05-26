@@ -155,35 +155,6 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-thumb{background:var(--g100);border-radius:3px}
 
-/* ===== API SETTINGS ===== */
-.nav-settings{background:none;border:none;cursor:pointer;padding:6px 8px;display:flex;align-items:center;gap:5px;color:var(--g400);transition:color .18s;font-size:16px;position:relative}
-.nav-settings:hover{color:var(--p600)}
-.api-dot{width:7px;height:7px;border-radius:50%;background:var(--g100);display:inline-block;transition:background .3s}
-.api-dot.live{background:var(--t400);box-shadow:0 0 6px rgba(29,158,117,.4)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.modal{background:#fff;border-radius:18px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;animation:modalIn .25s ease}
-@keyframes modalIn{from{opacity:0;transform:translateY(-20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-.modal-hdr{padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-size:17px;font-weight:700;color:var(--p900)}
-.modal-close{background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 8px;border-radius:6px}
-.modal-close:hover{background:var(--p50);color:var(--p600)}
-.modal-body{padding:16px 20px}
-.modal-desc{font-size:13px;color:var(--g400);margin-bottom:14px;line-height:1.6}
-.modal-input{width:100%;padding:11px 14px;border:.5px solid rgba(0,0,0,.12);border-radius:10px;font-size:14px;font-family:inherit;color:var(--g900);outline:none;transition:border-color .18s;background:#fafaf9}
-.modal-input:focus{border-color:var(--p400);background:#fff}
-.modal-help{margin-top:8px;text-align:right}
-.modal-help a{font-size:12px;color:var(--p600);text-decoration:none}
-.modal-help a:hover{text-decoration:underline}
-.modal-warn{font-size:11px;color:var(--a400);background:var(--a50);padding:8px 12px;border-radius:8px;margin-top:10px;line-height:1.5}
-.modal-footer{padding:0 20px 16px;display:flex;justify-content:flex-end;gap:10px}
-.modal-btn{padding:9px 20px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;transition:all .18s;font-family:inherit;border:none}
-.modal-btn-save{background:linear-gradient(135deg,var(--p600),var(--pk600));color:#fff}
-.modal-btn-save:hover{opacity:.88;transform:translateY(-1px)}
-.modal-btn-cancel{background:#fff;color:var(--g800);border:.5px solid rgba(0,0,0,.15)}
-.modal-btn-cancel:hover{background:var(--p50);color:var(--p600)}
-.modal-btn-clear{background:var(--g100);color:var(--g800)}
-.modal-btn-clear:hover{background:#e0e0de}
-
 /* ===== WORD COUNT SELECTOR ===== */
 .wc-card{margin-bottom:12px}
 .wc-card .form-lbl{margin-bottom:10px}
@@ -226,7 +197,6 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
       <button class="nav-btn" onclick="openTool('story')">小说创作</button>
       <button class="nav-btn" onclick="openTool('copywriting')">营销文案</button>
       <button class="nav-btn nav-cta" onclick="scrollToTools()">立即使用 →</button>
-      <button class="nav-settings" onclick="openApiSettings()" title="API 设置"><span class="api-dot" id="api-dot"></span> ⚙</button>
     </nav>
   </div>
 </header>
@@ -472,39 +442,6 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 </footer>
 
 <div id="toast" class="toast"></div>
-
-<!-- API Key 设置模态框 -->
-<div class="modal-overlay" id="api-modal" style="display:none" onclick="if(event.target===this)closeModal('api-modal')">
-  <div class="modal">
-    <div class="modal-hdr">
-      <span class="modal-title">🔑 配置免费 AI 额度</span>
-      <button class="modal-close" onclick="closeModal('api-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-desc" style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px;margin-bottom:16px;">
-        <strong>💡 DeepSeek 新用户免费赠送约 500 万 token 额度</strong><br>
-        <span style="font-size:13px;color:#555;">足够生成数千篇文章，用完可随时充值（价格极低）</span>
-      </div>
-      <div style="margin-bottom:14px;">
-        <div style="font-weight:600;margin-bottom:8px;font-size:14px;">三步获取免费 Key：</div>
-        <div style="font-size:13px;color:#555;line-height:2;">
-          <span style="display:inline-block;width:22px;height:22px;background:var(--p50);color:#fff;border-radius:50%;text-align:center;line-height:22px;font-size:12px;margin-right:6px;">1</span> 打开 <a href="https://platform.deepseek.com/" target="_blank" style="color:var(--p50);font-weight:600;">platform.deepseek.com</a>，手机号注册<br>
-          <span style="display:inline-block;width:22px;height:22px;background:var(--p50);color:#fff;border-radius:50%;text-align:center;line-height:22px;font-size:12px;margin-right:6px;">2</span> 进入 <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:var(--p50);font-weight:600;">API Keys 页面</a>，点击「创建 API Key」<br>
-          <span style="display:inline-block;width:22px;height:22px;background:var(--p50);color:#fff;border-radius:50%;text-align:center;line-height:22px;font-size:12px;margin-right:6px;">3</span> 复制 Key（以 sk- 开头），粘贴到下方输入框
-        </div>
-      </div>
-      <button onclick="window.open('https://platform.deepseek.com/','_blank')" style="width:100%;padding:10px;border:2px dashed var(--p50);border-radius:8px;background:#faf5ff;color:var(--p50);font-weight:600;cursor:pointer;margin-bottom:14px;font-size:14px;">
-        🚀 一键前往注册（新用户免费）
-      </button>
-      <input class="modal-input" id="api-key-input" type="password" placeholder="粘贴 DeepSeek API Key（以 sk- 开头）">
-      <div class="modal-warn" style="margin-top:8px;">⚠️ Key 仅保存在你的浏览器本地，不会上传到任何服务器。不要在公共电脑上保存。</div>
-    </div>
-    <div class="modal-footer">
-      <button class="modal-btn modal-btn-cancel" onclick="closeModal('api-modal')">暂不配置</button>
-      <button class="modal-btn modal-btn-save" onclick="handleApiKeySave()">保存 Key</button>
-    </div>
-  </div>
-</div>
 
 <script>
 // ======= Tool Definitions =======
@@ -752,70 +689,11 @@ title:{name:'爆款标题生成',icon:'✨',color:'var(--a50)',
 let curTool = null;
 let sel = {};
 let busy = false;
-let apiKey = '';
 let wordCount = 'medium';
-let useApi = false;
 let abortController = null;
 let chapterIndex = 0;
 let chapterHistory = [];
 let generationMode = '';
-
-// 页面加载时从 localStorage 恢复 API Key
-loadApiKey();
-
-// ======= API Key 管理 =======
-function loadApiKey(){
-  const saved = localStorage.getItem('qibi_api_key');
-  if(saved){ apiKey = saved; useApi = true; }
-  updateApiIndicator();
-}
-
-function saveApiKey(key){
-  apiKey = key.trim();
-  if(apiKey){ localStorage.setItem('qibi_api_key', apiKey); useApi = true; }
-  else { localStorage.removeItem('qibi_api_key'); apiKey = ''; useApi = false; }
-  updateApiIndicator();
-}
-
-function clearApiKey(){
-  apiKey = ''; useApi = false;
-  localStorage.removeItem('qibi_api_key');
-  document.getElementById('api-key-input').value = '';
-  updateApiIndicator();
-  closeModal('api-modal');
-  toast('API Key 已清除');
-}
-
-function openApiSettings(){
-  document.getElementById('api-key-input').value = apiKey;
-  document.getElementById('api-modal').style.display = 'flex';
-  document.addEventListener('keydown', escClose);
-}
-
-function closeModal(id){
-  document.getElementById(id).style.display = 'none';
-  document.removeEventListener('keydown', escClose);
-}
-
-function escClose(e){ if(e.key==='Escape') closeModal('api-modal'); }
-
-function handleApiKeySave(){
-  const input = document.getElementById('api-key-input');
-  const key = input.value.trim();
-  if(!key){ clearApiKey(); return; }
-  if(!key.startsWith('sk-')){ toast('Key 格式错误，应以 sk- 开头'); return; }
-  saveApiKey(key);
-  closeModal('api-modal');
-  toast('API Key 已保存 ✓');
-}
-
-function updateApiIndicator(){
-  const dot = document.getElementById('api-dot');
-  if(dot){
-    if(useApi){ dot.classList.add('live'); dot.title = 'AI 引擎就绪'; }
-    else { dot.classList.remove('live'); dot.title = '未配置 API，使用本地模板'; }
-  }
-}
 
 // ======= Word Count =======
 function setWordCount(btn, wc){
@@ -947,15 +825,13 @@ async function doGen(chapterContext=null){
   let txt=''; let success=false;
 
   // Try API first
-  if(useApi&&apiKey){
-    try{
-      txt=await callDeepSeekAPI(chapterContext);
-      success=true; generationMode='api';
-    }catch(err){
-      console.error('API 调用失败，降级到本地模板:',err.message);
-      generationMode='fallback';
-      if(err.name==='AbortError'){hideProgress();document.getElementById('obody').textContent='生成已取消';finishGeneration(btn,true);return;}
-    }
+  try{
+    txt=await callDeepSeekAPI(chapterContext);
+    success=true; generationMode='api';
+  }catch(err){
+    console.error('API 调用失败，降级到本地模板:',err.message);
+    generationMode='fallback';
+    if(err.name==='AbortError'){hideProgress();document.getElementById('obody').textContent='生成已取消';finishGeneration(btn,true);return;}
   }
 
   // Fallback: local template
@@ -990,11 +866,11 @@ async function callDeepSeekAPI(chapterContext=null){
   const wcMap={short:'300-500字',medium:'1000-2000字',long:'3000-5000字'};
   const tokenMap={short:1024,medium:2048,long:4096};
 
-  updateProgress(10,'正在连接 DeepSeek AI 引擎...');
+  updateProgress(10,'正在连接 AI 引擎...');
 
-  const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+  const resp=await fetch('https://qibi-api.vercel.app/api/generate',{
     method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+    headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       model:'deepseek-chat',
       messages:[{role:'system',content:systemPrompt},{role:'user',content:userPrompt+'\n\n请生成'+wcMap[wordCount]+'的内容。'}],
@@ -1004,11 +880,8 @@ async function callDeepSeekAPI(chapterContext=null){
   });
 
   if(!resp.ok){
-    const errT=await resp.text();
-    if(resp.status===401)throw new Error('API Key 无效，请检查');
-    if(resp.status===429)throw new Error('请求过于频繁，请稍后再试');
-    if(resp.status===402)throw new Error('API 额度不足');
-    throw new Error('API 错误 ('+resp.status+')');
+    const data=await resp.json().catch(()=>({}));
+    throw new Error(data.error||'API 请求失败 ('+resp.status+')');
   }
 
   updateProgress(25,'AI 正在构思内容...');
