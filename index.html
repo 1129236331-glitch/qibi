@@ -154,6 +154,59 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 ::selection{background:var(--p100);color:var(--p900)}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-thumb{background:var(--g100);border-radius:3px}
+
+/* ===== API SETTINGS ===== */
+.nav-settings{background:none;border:none;cursor:pointer;padding:6px 8px;display:flex;align-items:center;gap:5px;color:var(--g400);transition:color .18s;font-size:16px;position:relative}
+.nav-settings:hover{color:var(--p600)}
+.api-dot{width:7px;height:7px;border-radius:50%;background:var(--g100);display:inline-block;transition:background .3s}
+.api-dot.live{background:var(--t400);box-shadow:0 0 6px rgba(29,158,117,.4)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal{background:#fff;border-radius:18px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;animation:modalIn .25s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(-20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-hdr{padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:17px;font-weight:700;color:var(--p900)}
+.modal-close{background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 8px;border-radius:6px}
+.modal-close:hover{background:var(--p50);color:var(--p600)}
+.modal-body{padding:16px 20px}
+.modal-desc{font-size:13px;color:var(--g400);margin-bottom:14px;line-height:1.6}
+.modal-input{width:100%;padding:11px 14px;border:.5px solid rgba(0,0,0,.12);border-radius:10px;font-size:14px;font-family:inherit;color:var(--g900);outline:none;transition:border-color .18s;background:#fafaf9}
+.modal-input:focus{border-color:var(--p400);background:#fff}
+.modal-help{margin-top:8px;text-align:right}
+.modal-help a{font-size:12px;color:var(--p600);text-decoration:none}
+.modal-help a:hover{text-decoration:underline}
+.modal-warn{font-size:11px;color:var(--a400);background:var(--a50);padding:8px 12px;border-radius:8px;margin-top:10px;line-height:1.5}
+.modal-footer{padding:0 20px 16px;display:flex;justify-content:flex-end;gap:10px}
+.modal-btn{padding:9px 20px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;transition:all .18s;font-family:inherit;border:none}
+.modal-btn-save{background:linear-gradient(135deg,var(--p600),var(--pk600));color:#fff}
+.modal-btn-save:hover{opacity:.88;transform:translateY(-1px)}
+.modal-btn-clear{background:var(--g100);color:var(--g800)}
+.modal-btn-clear:hover{background:#e0e0de}
+
+/* ===== WORD COUNT SELECTOR ===== */
+.wc-card{margin-bottom:12px}
+.wc-card .form-lbl{margin-bottom:10px}
+.wc-row{display:flex;gap:10px;flex-wrap:wrap}
+.wc-btn{flex:1;min-width:100px;padding:12px 14px;border:.5px solid rgba(0,0,0,.1);border-radius:14px;background:#fafaf9;cursor:pointer;text-align:center;transition:all .18s;font-family:inherit;display:flex;flex-direction:column;gap:3px}
+.wc-btn:hover{border-color:var(--p400);background:var(--p50)}
+.wc-btn.on{background:var(--p600);color:#fff;border-color:var(--p600);box-shadow:0 2px 12px rgba(83,74,183,.25)}
+.wc-btn.on .wc-range{color:rgba(255,255,255,.75)}
+.wc-label{font-size:15px;font-weight:600}
+.wc-range{font-size:11px;color:var(--g400);transition:color .18s}
+
+/* ===== CHAPTER NAV ===== */
+.chapter-nav{margin-top:14px;background:linear-gradient(135deg,var(--p50),var(--pk50));border-radius:14px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.chapter-info{font-size:13px;font-weight:600;color:var(--p600)}
+.chapter-actions{display:flex;gap:8px}
+.chapter-btn{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;border:none;background:var(--p600);color:#fff}
+.chapter-btn:hover{opacity:.88;transform:translateY(-1px)}
+.chapter-btn.secondary{background:#fff;color:var(--p600);border:.5px solid var(--p200)}
+.chapter-btn.secondary:hover{background:var(--p100)}
+.chapter-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* ===== GEN MODE TAG ===== */
+.gen-mode{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:2px 9px;border-radius:10px;font-weight:500}
+.gen-mode.api{background:var(--t50);color:var(--t600)}
+.gen-mode.fallback{background:var(--a50);color:var(--a600)}
 </style>
 </head>
 <body>
@@ -171,6 +224,7 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
       <button class="nav-btn" onclick="openTool('story')">小说创作</button>
       <button class="nav-btn" onclick="openTool('copywriting')">营销文案</button>
       <button class="nav-btn nav-cta" onclick="scrollToTools()">立即使用 →</button>
+      <button class="nav-settings" onclick="openApiSettings()" title="API 设置"><span class="api-dot" id="api-dot"></span> ⚙</button>
     </nav>
   </div>
 </header>
@@ -416,6 +470,28 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 </footer>
 
 <div id="toast" class="toast"></div>
+
+<!-- API Key 设置模态框 -->
+<div class="modal-overlay" id="api-modal" style="display:none" onclick="if(event.target===this)closeModal('api-modal')">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title">API Key 设置</span>
+      <button class="modal-close" onclick="closeModal('api-modal')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc">接入 DeepSeek AI 引擎，解锁真实 AI 内容生成能力。<br>Key 仅存储在浏览器本地，不会上传至任何服务器。</div>
+      <input class="modal-input" id="api-key-input" type="password" placeholder="输入 DeepSeek API Key（sk-...）">
+      <div class="modal-help">
+        <a href="https://platform.deepseek.com/api_keys" target="_blank">获取 API Key →</a>
+      </div>
+      <div class="modal-warn">⚠️ Key 仅存储在浏览器本地（localStorage），不会上传至任何服务器。请勿在公共电脑保存。</div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-clear" onclick="clearApiKey()">清除 Key</button>
+      <button class="modal-btn modal-btn-save" onclick="handleApiKeySave()">保存</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ======= Tool Definitions =======
@@ -663,6 +739,71 @@ title:{name:'爆款标题生成',icon:'✨',color:'var(--a50)',
 let curTool = null;
 let sel = {};
 let busy = false;
+let apiKey = '';
+let wordCount = 'medium';
+let useApi = false;
+let abortController = null;
+let chapterIndex = 0;
+let chapterHistory = [];
+let generationMode = '';
+
+// 页面加载时从 localStorage 恢复 API Key
+loadApiKey();
+
+// ======= API Key 管理 =======
+function loadApiKey(){
+  const saved = localStorage.getItem('qibi_api_key');
+  if(saved){ apiKey = saved; useApi = true; }
+  updateApiIndicator();
+}
+
+function saveApiKey(key){
+  apiKey = key.trim();
+  if(apiKey){ localStorage.setItem('qibi_api_key', apiKey); useApi = true; }
+  else { localStorage.removeItem('qibi_api_key'); apiKey = ''; useApi = false; }
+  updateApiIndicator();
+}
+
+function clearApiKey(){
+  apiKey = ''; useApi = false;
+  localStorage.removeItem('qibi_api_key');
+  document.getElementById('api-key-input').value = '';
+  updateApiIndicator();
+  closeModal('api-modal');
+  toast('API Key 已清除');
+}
+
+function openApiSettings(){
+  document.getElementById('api-key-input').value = apiKey;
+  document.getElementById('api-modal').style.display = 'flex';
+}
+
+function closeModal(id){ document.getElementById(id).style.display = 'none'; }
+
+function handleApiKeySave(){
+  const input = document.getElementById('api-key-input');
+  const key = input.value.trim();
+  if(!key){ clearApiKey(); return; }
+  if(!key.startsWith('sk-')){ toast('Key 格式错误，应以 sk- 开头'); return; }
+  saveApiKey(key);
+  closeModal('api-modal');
+  toast('API Key 已保存 ✓');
+}
+
+function updateApiIndicator(){
+  const dot = document.getElementById('api-dot');
+  if(dot){
+    if(useApi){ dot.classList.add('live'); dot.title = 'AI 引擎就绪'; }
+    else { dot.classList.remove('live'); dot.title = '未配置 API，使用本地模板'; }
+  }
+}
+
+// ======= Word Count =======
+function setWordCount(btn, wc){
+  document.querySelectorAll('.wc-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  wordCount = wc;
+}
 
 // ======= Navigation =======
 function goHome(){
@@ -677,7 +818,7 @@ function scrollToTools(){
   setTimeout(()=>document.getElementById('tools-anchor').scrollIntoView({behavior:'smooth'}),100);
 }
 function openTool(id){
-  curTool=id; sel={};
+  curTool=id; sel={}; wordCount='medium'; chapterIndex=0; chapterHistory=[];
   const t=TOOLS[id];
   document.getElementById('home').style.display='none';
   const ws=document.getElementById('workspace');
@@ -698,6 +839,25 @@ function openTool(id){
         ${s.opts.map(o=>`<button class="tag" data-g="${s.id}" data-v="${o}" data-m="${s.multi}" onclick="togTag(this)">${o}</button>`).join('')}
       </div></div>`;
   });
+
+  // Word count selector
+  h+=`<div class="form-card wc-card">
+    <div class="form-lbl">内容字数 <span class="lbl-req">必选</span></div>
+    <div class="wc-row">
+      <button class="wc-btn on" data-wc="medium" onclick="setWordCount(this,'medium')">
+        <span class="wc-label">中篇</span>
+        <span class="wc-range">1000-2000字</span>
+      </button>
+      <button class="wc-btn" data-wc="short" onclick="setWordCount(this,'short')">
+        <span class="wc-label">短篇</span>
+        <span class="wc-range">300-500字</span>
+      </button>
+      <button class="wc-btn" data-wc="long" onclick="setWordCount(this,'long')">
+        <span class="wc-label">长篇</span>
+        <span class="wc-range">3000-5000字</span>
+      </button>
+    </div>
+  </div>`;
 
   h+=`<div class="form-card">
     <div class="form-lbl">补充说明 <span class="lbl-opt">可选</span></div>
@@ -746,60 +906,211 @@ function togTag(el){
 }
 
 // ======= Generate =======
-async function doGen(){
+async function doGen(chapterContext=null){
   if(busy)return;
   const t=TOOLS[curTool];
   const miss=t.sections.filter(s=>s.req&&!sel[s.id]).map(s=>s.lbl);
   if(miss.length){toast('请先选择：'+miss.join('、'));return;}
+  const extra=document.getElementById('xtra')?.value?.trim()||'';
+  if(['summary','translate','resume','title'].includes(curTool)&&!extra){toast('请输入需要处理的内容');return;}
   busy=true;
+  generationMode='';
+  abortController=new AbortController();
   const btn=document.getElementById('gbtn');
   btn.disabled=true;
-  btn.innerHTML=`<span class="typing"><i></i><i></i><i></i></span> AI 正在创作中，请稍候…`;
+  btn.innerHTML=`<span class="typing"><i></i><i></i><i></i></span> AI 正在创作中...`;
 
   // Progress bar
-  const pw=document.getElementById('prog-wrap');
-  const pf=document.getElementById('prog-fill');
-  const pl=document.getElementById('prog-lbl');
-  pw.style.display='block';
-  const stages=['分析创作参数…','构建内容框架…','生成精彩内容…','润色优化中…'];
-  let prog=0, si=0;
-  const pt=setInterval(()=>{
-    prog=Math.min(prog+(Math.random()*8+2),90);
-    pf.style.width=prog+'%';
-    if(si<stages.length&&prog>si*22){pl.textContent=stages[si++];}
-  },200);
+  showProgress();
+  // Show output area
+  showOutput();
 
-  // Show output
+  let txt=''; let success=false;
+
+  // Try API first
+  if(useApi&&apiKey){
+    try{
+      txt=await callDeepSeekAPI(chapterContext);
+      success=true; generationMode='api';
+    }catch(err){
+      console.error('API 调用失败，降级到本地模板:',err.message);
+      generationMode='fallback';
+      if(err.name==='AbortError'){hideProgress();document.getElementById('obody').textContent='生成已取消';finishGeneration(btn,true);return;}
+    }
+  }
+
+  // Fallback: local template
+  if(!success){
+    generationMode='fallback';
+    await new Promise(r=>setTimeout(r,400+Math.random()*300));
+    txt=generateContent(curTool,sel,t.sections,t.placeholder);
+    if(chapterContext){txt=`【第 ${chapterIndex+1} 章】\n\n（接上文...）\n\n`+txt;}
+  }
+
+  // Complete progress
+  completeProgress();
+
+  // Stream output
+  const obody=document.getElementById('obody');
+  obody.textContent='';
+  obody.scrollIntoView({behavior:'smooth',block:'start'});
+  await streamText(txt,obody);
+
+  // Finish
+  finishGeneration(btn,false);
+  if(curTool==='story'&&success&&generationMode==='api'){chapterHistory.push(txt);showChapterNav();}
+}
+
+// API call
+async function callDeepSeekAPI(chapterContext=null){
+  const t=TOOLS[curTool];
+  const extra=document.getElementById('xtra')?.value?.trim()||'';
+  const ctx=getContext(curTool,sel,t.sections,t.placeholder);
+  const systemPrompt=buildSystemPrompt(curTool,ctx);
+  const userPrompt=buildUserPrompt(curTool,ctx,extra,chapterContext);
+  const wcMap={short:'300-500字',medium:'1000-2000字',long:'3000-5000字'};
+  const tokenMap={short:1024,medium:2048,long:4096};
+
+  updateProgress(10,'正在连接 DeepSeek AI 引擎...');
+
+  const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+    body:JSON.stringify({
+      model:'deepseek-chat',
+      messages:[{role:'system',content:systemPrompt},{role:'user',content:userPrompt+'\n\n请生成'+wcMap[wordCount]+'的内容。'}],
+      stream:true,temperature:0.8,max_tokens:tokenMap[wordCount]||2048
+    }),
+    signal:abortController.signal
+  });
+
+  if(!resp.ok){
+    const errT=await resp.text();
+    if(resp.status===401)throw new Error('API Key 无效，请检查');
+    if(resp.status===429)throw new Error('请求过于频繁，请稍后再试');
+    if(resp.status===402)throw new Error('API 额度不足');
+    throw new Error('API 错误 ('+resp.status+')');
+  }
+
+  updateProgress(25,'AI 正在构思内容...');
+
+  const reader=resp.body.getReader(); const decoder=new TextDecoder();
+  let fullText='', buffer='', charCount=0;
+
+  while(true){
+    const{value,done}=await reader.read();
+    if(done)break;
+    buffer+=decoder.decode(value,{stream:true});
+    const lines=buffer.split('\n'); buffer=lines.pop()||'';
+    for(const line of lines){
+      const trimmed=line.trim();
+      if(!trimmed||!trimmed.startsWith('data: '))continue;
+      const data=trimmed.slice(6);
+      if(data==='[DONE]')break;
+      try{
+        const parsed=JSON.parse(data);
+        const content=parsed.choices?.[0]?.delta?.content||'';
+        if(content){fullText+=content; charCount+=content.length;}
+      }catch(e){/*skip*/}
+    }
+    if(charCount%80===0||charCount<200){
+      const prog=Math.min(25+Math.floor(charCount/20),95);
+      updateProgress(prog,'已生成 '+charCount+' 字...');
+    }
+  }
+
+  updateProgress(98,'润色优化中...');
+  return fullText.trim();
+}
+
+// Prompt builders
+function buildSystemPrompt(toolId,ctx){
+  const roleMap={
+    story:'你是一位经验丰富的小说作家，擅长各种题材的创作。注重人物塑造、情节推进和细节描写。用流畅的叙事语言写作，不要输出元信息。',
+    copywriting:'你是一位资深营销文案写手，熟悉各大平台的文案调性。撰写高转化率文案，有标题、正文和行动号召。',
+    email:'你是一位专业商务沟通专家，精通各类商务邮件写作。格式规范，符合商务礼仪。',
+    social:'你是一位社交媒体内容创作者，深谙各平台内容规律。创作高互动率内容，包含话题标签和互动引导。',
+    poem:'你是一位精通古典诗词和现代诗歌的诗人。严格按指定体裁创作，遵守格律要求。附上作品标题和简短赏析。',
+    resume:'你是一位资深 HR 和职业顾问。使用 STAR 法则优化简历，量化成果。只输出优化后内容，不要解释。',
+    summary:'你是一位专业内容编辑。从长文中提取核心观点，按指定格式输出精炼摘要。',
+    translate:'你是一位专业翻译。根据风格要求进行翻译，同时做文化适配和语言润色。输出译文及简短翻译说明。',
+    title:'你是一位爆款标题专家。生成高点击率标题方案，适合目标平台调性。每个标题单独一行带序号。'
+  };
+  return '你是"奇笔 AI"的专业写作助手，擅长中文内容创作。\n\n'+(roleMap[toolId]||roleMap.story);
+}
+
+function buildUserPrompt(toolId,ctx,extra,chapterContext){
+  let p='';
+  TOOLS[toolId].sections.forEach(s=>{
+    const v=ctx.sel[s.id];
+    if(v)p+=s.lbl+'：'+(Array.isArray(v)?v.join('、'):v)+'\n';
+  });
+  if(extra)p+='\n补充说明：'+extra;
+  if(toolId==='story'&&chapterContext){
+    p+='\n\n这是小说的第 '+(chapterIndex+1)+' 章。前文概要：'+chapterContext.substring(0,500);
+    p+='\n请在保持人物性格、情节连贯的前提下继续创作本章。';
+  }
+  const instr={
+    story:'请创作完整的小说片段，有清晰的开头、发展和结尾。',
+    copywriting:'请生成营销文案，含标题、正文、标签，有吸引力和行动号召。',
+    email:'请生成完整邮件，含主题和正文，格式规范。',
+    social:'请生成社交媒体内容，含正文、标签和互动引导。',
+    poem:'请创作诗歌，严格遵循所选体裁格律，附标题和赏析。',
+    resume:'请基于补充说明中的原始内容，优化简历描述。用STAR法则，量化成果。',
+    summary:'请基于补充说明中的文章，按指定格式提取摘要。',
+    translate:'请基于补充说明中的文本，按指定方向和风格翻译。',
+    title:'请基于补充说明中的主题，生成指定数量的标题方案。'
+  };
+  if(instr[toolId])p+='\n\n'+instr[toolId];
+  return p;
+}
+
+// Progress helpers
+function showProgress(){
+  const pw=document.getElementById('prog-wrap'),pf=document.getElementById('prog-fill'),pl=document.getElementById('prog-lbl');
+  pw.style.display='block'; pf.style.width='0%'; pl.textContent='AI 正在思考...';
+}
+function updateProgress(pct,label){
+  document.getElementById('prog-fill').style.width=pct+'%';
+  if(label)document.getElementById('prog-lbl').textContent=label;
+}
+function completeProgress(){
+  const pw=document.getElementById('prog-wrap'),pf=document.getElementById('prog-fill'),pl=document.getElementById('prog-lbl');
+  pf.style.width='100%'; pl.textContent='生成完成 ✓';
+  setTimeout(()=>{pw.style.display='none';pf.style.width='0%';},1200);
+}
+function hideProgress(){
+  const pw=document.getElementById('prog-wrap');
+  pw.style.display='none'; document.getElementById('prog-fill').style.width='0%';
+}
+function showOutput(){
   const ow=document.getElementById('output-wrap');
-  ow.style.display='block';
-  ow.scrollIntoView({behavior:'smooth',block:'start'});
+  ow.style.display='block'; ow.scrollIntoView({behavior:'smooth',block:'start'});
   document.getElementById('obody').innerHTML='<span class="typing"><i></i><i></i><i></i></span>';
   document.getElementById('ofoot').style.display='none';
-
-  const txt=generateContent(curTool,sel,t.sections,t.placeholder);
-  const delay=600+Math.random()*400;
-  await new Promise(r=>setTimeout(r,delay));
-
-  clearInterval(pt);
-  pf.style.width='100%';
-  pl.textContent='生成完成 ✓';
-  setTimeout(()=>{pw.style.display='none';pf.style.width='0%';},1200);
-
-  await stream(txt);
-
-  const odot=document.getElementById('odot');
-  const otxt=document.getElementById('otxt');
-  odot.classList.remove('pulse');
-  otxt.textContent='创作完成';
-
-  const ofoot=document.getElementById('ofoot');
-  const cc=document.getElementById('obody').textContent.length;
+  document.getElementById('odot').classList.add('pulse');
+  document.getElementById('otxt').textContent='AI 正在创作...';
+}
+function finishGeneration(btn,cancelled){
+  document.getElementById('odot').classList.remove('pulse');
+  document.getElementById('otxt').textContent=cancelled?'生成已取消':'创作完成';
+  const ofoot=document.getElementById('ofoot'),cc=document.getElementById('obody').textContent.length;
+  const modeTag=generationMode==='api'?'AI 引擎':'本地模板';
   ofoot.style.display='flex';
-  ofoot.innerHTML=`<span>字数约 ${Math.ceil(cc/1.5)}</span><span>字符 ${cc}</span><span>耗时 ${(Math.random()*2+1).toFixed(1)}s</span>`;
+  ofoot.innerHTML='<span>字数约 '+Math.ceil(cc/1.5)+'</span><span>字符 '+cc+'</span><span class="gen-mode '+(generationMode==='api'?'api':'fallback')+'">'+modeTag+'</span>';
+  busy=false; btn.disabled=false; btn.innerHTML='<span>↺ 重新生成</span>';
+}
 
-  busy=false;
-  btn.disabled=false;
-  btn.innerHTML=`<span>↺ 重新生成</span>`;
+function streamText(txt,el){
+  el.textContent=''; let i=0;
+  return new Promise(res=>{
+    const iv=setInterval(()=>{
+      const n=Math.floor(Math.random()*5)+1;
+      for(let j=0;j<n&&i<txt.length;j++,i++)el.textContent+=txt[i];
+      el.scrollIntoView({block:'end',behavior:'nearest'});
+      if(i>=txt.length){clearInterval(iv);res();}
+    },14);
+  });
 }
 
 // ======= Content Generation Engine =======
@@ -1127,29 +1438,83 @@ ${titles.map((t,i)=>`${i+1}. ${t}`).join('\n')}
 ✦ 生成说明：共 ${titles.length} 个标题，覆盖${stys.join('、')}等类型，适配${P}平台调性。${c.extra?'\n创作主题：'+c.extra:topic}`;
 }
 
-// ============
-  const el=document.getElementById('obody');
-  el.textContent='';
-  let i=0;
-  return new Promise(res=>{
-    const iv=setInterval(()=>{
-      const n=Math.floor(Math.random()*5)+1;
-      for(let j=0;j<n&&i<txt.length;j++,i++)el.textContent+=txt[i];
-      el.scrollIntoView({block:'end',behavior:'nearest'});
-      if(i>=txt.length){clearInterval(iv);res();}
-    },14);
-  });
-}
-
 function doRegen(){
   sel={};
+  wordCount='medium'; chapterIndex=0; chapterHistory=[]; generationMode='';
   document.querySelectorAll('.tag.on').forEach(t=>t.classList.remove('on'));
+  // Reset word count buttons
+  document.querySelectorAll('.wc-btn').forEach(b=>b.classList.remove('on'));
+  const defWc=document.querySelector('.wc-btn[data-wc="medium"]');
+  if(defWc)defWc.classList.add('on');
+  // Remove chapter nav if exists
+  const cn=document.querySelector('.chapter-nav');
+  if(cn)cn.remove();
   document.getElementById('output-wrap').style.display='none';
   document.getElementById('obody').textContent='';
   const btn=document.getElementById('gbtn');
   if(btn){btn.disabled=false;btn.innerHTML=`<span>${TOOLS[curTool].cta}</span>`;}
   busy=false;
   window.scrollTo({top:document.getElementById('workspace').offsetTop-80,behavior:'smooth'});
+}
+
+// ======= Chapter Navigation =======
+function showChapterNav(){
+  // Remove existing nav
+  const old=document.querySelector('.chapter-nav');
+  if(old)old.remove();
+  const nav=document.createElement('div');
+  nav.className='chapter-nav';
+  nav.innerHTML=`
+    <div class="chapter-info">📖 第 ${chapterIndex+1} 章 · 共 ${chapterHistory.length} 章</div>
+    <div class="chapter-actions">
+      <button class="chapter-btn secondary" onclick="viewChapterHistory()">📚 章节目录</button>
+      <button class="chapter-btn" onclick="generateNextChapter()">✚ 续写下一章</button>
+    </div>`;
+  const ow=document.getElementById('output-wrap');
+  ow.insertAdjacentElement('afterend',nav);
+  nav.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+async function generateNextChapter(){
+  if(busy)return;
+  chapterIndex++;
+  // Build context from previous chapters
+  let context='';
+  if(chapterHistory.length>0){
+    // Use last chapter's summary for context
+    const last=chapterHistory[chapterHistory.length-1];
+    context=last.substring(0,400);
+  }
+  // Hide chapter nav during generation
+  const cn=document.querySelector('.chapter-nav');
+  if(cn)cn.style.display='none';
+  await doGen(context);
+  // Restore nav
+  const cn2=document.querySelector('.chapter-nav');
+  if(cn2)cn2.style.display='';
+}
+
+function viewChapterHistory(){
+  if(!chapterHistory.length){toast('暂无章节记录');return;}
+  // Build full text
+  let all='';
+  chapterHistory.forEach((ch,i)=>{
+    all+=`\n${'═'.repeat(40)}\n第 ${i+1} 章\n${'═'.repeat(40)}\n\n${ch}\n`;
+  });
+  const obody=document.getElementById('obody');
+  const ow=document.getElementById('output-wrap');
+  ow.style.display='block';
+  // Stream display all chapters
+  obody.textContent='';
+  streamText(all.trim(),obody);
+  const ofoot=document.getElementById('ofoot');
+  ofoot.style.display='flex';
+  ofoot.innerHTML='<span>共 '+chapterHistory.length+' 章</span><span>总字数约 '+Math.ceil(all.length/1.5)+'</span>';
+  document.getElementById('odot').classList.remove('pulse');
+  document.getElementById('otxt').textContent='全部章节';
+  // Remove chapter nav temporarily
+  const cn=document.querySelector('.chapter-nav');
+  if(cn)cn.remove();
 }
 
 function doCopy(){
