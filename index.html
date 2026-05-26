@@ -179,6 +179,8 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 .modal-btn{padding:9px 20px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;transition:all .18s;font-family:inherit;border:none}
 .modal-btn-save{background:linear-gradient(135deg,var(--p600),var(--pk600));color:#fff}
 .modal-btn-save:hover{opacity:.88;transform:translateY(-1px)}
+.modal-btn-cancel{background:#fff;color:var(--g800);border:.5px solid rgba(0,0,0,.15)}
+.modal-btn-cancel:hover{background:var(--p50);color:var(--p600)}
 .modal-btn-clear{background:var(--g100);color:var(--g800)}
 .modal-btn-clear:hover{background:#e0e0de}
 
@@ -475,20 +477,20 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 <div class="modal-overlay" id="api-modal" style="display:none" onclick="if(event.target===this)closeModal('api-modal')">
   <div class="modal">
     <div class="modal-hdr">
-      <span class="modal-title">API Key 设置</span>
-      <button class="modal-close" onclick="closeModal('api-modal')">&times;</button>
+      <span class="modal-title">⚙ API Key 设置（可选）</span>
+      <button class="modal-close" onclick="closeModal('api-modal')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="modal-desc">接入 DeepSeek AI 引擎，解锁真实 AI 内容生成能力。<br>Key 仅存储在浏览器本地，不会上传至任何服务器。</div>
-      <input class="modal-input" id="api-key-input" type="password" placeholder="输入 DeepSeek API Key（sk-...）">
+      <div class="modal-desc"><strong>不填 Key 也能用！</strong> 当前默认使用内置模板生成内容。<br>填了 DeepSeek API Key 后，AI 会实时创作原创内容，效果更好。</div>
+      <input class="modal-input" id="api-key-input" type="password" placeholder="粘贴 DeepSeek API Key（以 sk- 开头）">
       <div class="modal-help">
-        <a href="https://platform.deepseek.com/api_keys" target="_blank">获取 API Key →</a>
+        <a href="https://platform.deepseek.com/api_keys" target="_blank">如何获取免费 API Key？→</a>
       </div>
-      <div class="modal-warn">⚠️ Key 仅存储在浏览器本地（localStorage），不会上传至任何服务器。请勿在公共电脑保存。</div>
+      <div class="modal-warn">⚠️ Key 仅保存在你的浏览器中，不会上传。不要在公共电脑上保存。</div>
     </div>
     <div class="modal-footer">
-      <button class="modal-btn modal-btn-clear" onclick="clearApiKey()">清除 Key</button>
-      <button class="modal-btn modal-btn-save" onclick="handleApiKeySave()">保存</button>
+      <button class="modal-btn modal-btn-cancel" onclick="closeModal('api-modal')">暂不配置</button>
+      <button class="modal-btn modal-btn-save" onclick="handleApiKeySave()">保存 Key</button>
     </div>
   </div>
 </div>
@@ -776,9 +778,15 @@ function clearApiKey(){
 function openApiSettings(){
   document.getElementById('api-key-input').value = apiKey;
   document.getElementById('api-modal').style.display = 'flex';
+  document.addEventListener('keydown', escClose);
 }
 
-function closeModal(id){ document.getElementById(id).style.display = 'none'; }
+function closeModal(id){
+  document.getElementById(id).style.display = 'none';
+  document.removeEventListener('keydown', escClose);
+}
+
+function escClose(e){ if(e.key==='Escape') closeModal('api-modal'); }
 
 function handleApiKeySave(){
   const input = document.getElementById('api-key-input');
