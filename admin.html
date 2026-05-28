@@ -67,7 +67,7 @@ h1{font-size:22px;margin-bottom:4px;color:#fff}
   <div class="card hidden" id="dash-view">
     <div class="logout"><a href="#" id="logout-btn">退出登录</a></div>
     <h1>奇笔 AI 管理后台</h1>
-    <p class="subtitle">API Key · 密码管理</p>
+    <p class="subtitle">API Key · 密码管理 <span style="font-size:11px;color:#6c5ce7;margin-left:8px">Vercel Proxy 模式</span></p>
 
     <!-- Key 状态 -->
     <div class="status" id="key-status">
@@ -104,11 +104,15 @@ h1{font-size:22px;margin-bottom:4px;color:#fff}
 
     <!-- 帮助信息 -->
     <div class="help-box">
-      <p><strong>获取 DeepSeek API Key：</strong></p>
+      <p><strong>生产环境（推荐）— Vercel Proxy</strong></p>
+      <p>部署到 Vercel 后，API Key 存放在服务端环境变量中，前端无需配置 Key。<br>
+      在 Vercel 项目设置 → Environment Variables 添加：<br>
+      <code>DEEPSEEK_API_KEY</code> = 你的 DeepSeek Key</p>
+      <p style="margin-top:8px"><strong>本地开发 — 浏览器 Key</strong></p>
       <p>1. 访问 <a href="https://platform.deepseek.com/api_keys" target="_blank">platform.deepseek.com</a></p>
       <p>2. 注册/登录后，点击「创建 API Key」</p>
       <p>3. 复制 Key（以 <code>sk-</code> 开头）粘贴到上方</p>
-      <p style="margin-top:8px;color:#555">Key 仅保存在你的浏览器本地，不会上传到任何服务器。</p>
+      <p style="margin-top:8px;color:#555">本地 Key 仅保存在浏览器，不会上传到任何服务器。</p>
     </div>
   </div>
 

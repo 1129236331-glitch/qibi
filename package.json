@@ -1,6 +1,6 @@
 {
-  "name": "qibi-api",
+  "name": "qibi",
   "version": "1.0.0",
   "private": true,
-  "description": "奇笔 AI API Proxy — Vercel Serverless Functions"
+  "description": "奇笔 AI 写作工具 — Vercel + DeepSeek API Proxy"
 }

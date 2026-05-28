@@ -863,13 +863,8 @@ async function doGen(chapterContext=null){
   if(curTool==='story'&&success&&generationMode==='api'){chapterHistory.push(txt);showChapterNav();}
 }
 
-// API call — 直连 DeepSeek，Key 从 localStorage 读取
+// API call — 优先走 Vercel 代理，降级到直连 + localStorage Key
 async function callDeepSeekAPI(chapterContext=null){
-  const apiKey = localStorage.getItem('qibi_deepseek_key');
-  if(!apiKey){
-    throw new Error('未配置 DeepSeek API Key，请前往<a href="admin/" style="color:#6c5ce7">管理后台</a>设置');
-  }
-
   const t=TOOLS[curTool];
   const extra=document.getElementById('xtra')?.value?.trim()||'';
   const ctx=getContext(curTool,sel,t.sections,t.placeholder);
@@ -877,22 +872,40 @@ async function callDeepSeekAPI(chapterContext=null){
   const userPrompt=buildUserPrompt(curTool,ctx,extra,chapterContext);
   const wcMap={short:'300-500字',medium:'1000-2000字',long:'3000-5000字'};
   const tokenMap={short:1024,medium:2048,long:4096};
+  const payload={
+    model:'deepseek-chat',
+    messages:[{role:'system',content:systemPrompt},{role:'user',content:userPrompt+'\n\n请生成'+wcMap[wordCount]+'的内容。'}],
+    stream:true,temperature:0.8,max_tokens:tokenMap[wordCount]||2048
+  };
 
-  updateProgress(10,'正在连接 DeepSeek AI...');
+  updateProgress(10,'正在连接 AI 服务...');
 
-  const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'Authorization':'Bearer '+apiKey
-    },
-    body:JSON.stringify({
-      model:'deepseek-chat',
-      messages:[{role:'system',content:systemPrompt},{role:'user',content:userPrompt+'\n\n请生成'+wcMap[wordCount]+'的内容。'}],
-      stream:true,temperature:0.8,max_tokens:tokenMap[wordCount]||2048
-    }),
-    signal:abortController.signal
-  });
+  // 1) 优先尝试 Vercel 代理（服务端 Key，无 CORS 问题）
+  let resp=null, useProxy=false;
+  try{
+    resp=await fetch('/api/proxy',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload),
+      signal:abortController.signal
+    });
+    if(resp.ok){useProxy=true;}
+  }catch(e){/* proxy 不可用，走直连 */}
+
+  // 2) 降级：直连 DeepSeek API（需 localStorage Key）
+  if(!useProxy){
+    const apiKey=localStorage.getItem('qibi_deepseek_key');
+    if(!apiKey){
+      throw new Error('未配置 API Key。<br>部署到 Vercel 后自动使用服务端 Key；<br>本地使用请前往<a href="admin/" style="color:#6c5ce7">管理后台</a>设置');
+    }
+    updateProgress(12,'直连 DeepSeek API...');
+    resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify(payload),
+      signal:abortController.signal
+    });
+  }
 
   if(!resp.ok){
     let errMsg='';
@@ -900,6 +913,7 @@ async function callDeepSeekAPI(chapterContext=null){
     if(resp.status===401)errMsg='API Key 无效，请在管理后台更新';
     else if(resp.status===402)errMsg='API 额度不足，请充值或更换 Key';
     else if(resp.status===429)errMsg='请求过于频繁，请稍后再试';
+    else if(resp.status===502||resp.status===500)errMsg='代理服务异常，请稍后重试';
     else if(!errMsg)errMsg='API 请求失败 ('+resp.status+')';
     throw new Error(errMsg);
   }
