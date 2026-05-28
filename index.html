@@ -880,23 +880,27 @@ async function callDeepSeekAPI(chapterContext=null){
 
   updateProgress(10,'正在连接 AI 服务...');
 
-  // 1) 优先尝试 Vercel 代理（服务端 Key，无 CORS 问题）
+  // 1) 优先尝试代理（服务端 Key，无 CORS 问题）
+  // GitHub Pages 不支持 serverless functions，直接跳过
   let resp=null, useProxy=false;
-  try{
-    resp=await fetch('/api/proxy',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload),
-      signal:abortController.signal
-    });
-    if(resp.ok){useProxy=true;}
-  }catch(e){/* proxy 不可用，走直连 */}
+  const skipProxy = location.hostname.includes('github.io');
+  if(!skipProxy){
+    try{
+      resp=await fetch('/api/proxy',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload),
+        signal:abortController.signal
+      });
+      if(resp.ok){useProxy=true;}
+    }catch(e){/* proxy 不可用，走直连 */}
+  }
 
   // 2) 降级：直连 DeepSeek API（需 localStorage Key）
   if(!useProxy){
     const apiKey=localStorage.getItem('qibi_deepseek_key');
     if(!apiKey){
-      throw new Error('未配置 API Key。<br>部署到 Vercel 后自动使用服务端 Key；<br>本地使用请前往<a href="admin/" style="color:#6c5ce7">管理后台</a>设置');
+      throw new Error('未配置 API Key，使用本地模板生成。前往管理后台设置 Key 即可启用 AI 生成。');
     }
     updateProgress(12,'直连 DeepSeek API...');
     resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
