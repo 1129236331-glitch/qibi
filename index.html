@@ -825,42 +825,54 @@ async function doGen(chapterContext=null){
 
   let txt=''; let success=false;
 
-  // Try API first
   try{
-    txt=await callDeepSeekAPI(chapterContext);
-    success=true; generationMode='api';
-  }catch(err){
-    console.error('API 调用失败，降级到本地模板:',err.message);
-    generationMode='fallback';
-    if(err.name==='AbortError'){hideProgress();document.getElementById('obody').textContent='生成已取消';finishGeneration(btn,true);return;}
-    // 通知用户 API 失败原因
-    if(err.message.includes('未配置')){
-      toast('未配置 API Key，使用本地模板生成。请前往管理后台设置 Key 以启用 AI 生成。');
-    }else{
-      toast('AI 引擎暂时不可用（'+err.message+'），已切换本地模板');
+    // Try API first
+    try{
+      txt=await callDeepSeekAPI(chapterContext);
+      success=true; generationMode='api';
+    }catch(err){
+      console.error('API 调用失败，降级到本地模板:',err.message);
+      generationMode='fallback';
+      if(err.name==='AbortError'){hideProgress();document.getElementById('obody').textContent='生成已取消';finishGeneration(btn,true);return;}
+      // 通知用户 API 失败原因
+      if(err.message.includes('未配置')){
+        toast('未配置 API Key，使用本地模板生成。请前往管理后台设置 Key 以启用 AI 生成。');
+      }else{
+        toast('AI 引擎暂时不可用（'+err.message+'），已切换本地模板');
+      }
     }
+
+    // Fallback: local template
+    if(!success){
+      generationMode='fallback';
+      await new Promise(r=>setTimeout(r,400+Math.random()*300));
+      try{
+        txt=generateContent(curTool,sel,t.sections,t.placeholder);
+        if(chapterContext){txt=`【第 ${chapterIndex+1} 章】\n\n（接上文...）\n\n`+txt;}
+      }catch(fbErr){
+        console.error('本地模板生成失败:',fbErr);
+        txt=TOOLS[curTool]?.sample||'生成失败，请刷新页面后重试。错误：'+fbErr.message;
+      }
+    }
+
+    // Complete progress
+    completeProgress();
+
+    // Stream output
+    const obody=document.getElementById('obody');
+    obody.textContent='';
+    obody.scrollIntoView({behavior:'smooth',block:'start'});
+    await streamText(txt,obody);
+
+    // Finish
+    finishGeneration(btn,false);
+    if(curTool==='story'&&success&&generationMode==='api'){chapterHistory.push(txt);showChapterNav();}
+  }catch(fatalErr){
+    console.error('生成过程发生严重错误:',fatalErr);
+    const obody=document.getElementById('obody');
+    if(obody)obody.textContent='生成过程出错：'+fatalErr.message+'。请刷新页面后重试。';
+    finishGeneration(btn,true);
   }
-
-  // Fallback: local template
-  if(!success){
-    generationMode='fallback';
-    await new Promise(r=>setTimeout(r,400+Math.random()*300));
-    txt=generateContent(curTool,sel,t.sections,t.placeholder);
-    if(chapterContext){txt=`【第 ${chapterIndex+1} 章】\n\n（接上文...）\n\n`+txt;}
-  }
-
-  // Complete progress
-  completeProgress();
-
-  // Stream output
-  const obody=document.getElementById('obody');
-  obody.textContent='';
-  obody.scrollIntoView({behavior:'smooth',block:'start'});
-  await streamText(txt,obody);
-
-  // Finish
-  finishGeneration(btn,false);
-  if(curTool==='story'&&success&&generationMode==='api'){chapterHistory.push(txt);showChapterNav();}
 }
 
 // API call — 优先走 Vercel 代理，降级到直连 + localStorage Key
@@ -897,18 +909,24 @@ async function callDeepSeekAPI(chapterContext=null){
   }
 
   // 2) 降级：直连 DeepSeek API（需 localStorage Key）
+  // 添加 12 秒超时保护，防止 API 调用卡住
   if(!useProxy){
     const apiKey=localStorage.getItem('qibi_deepseek_key');
     if(!apiKey){
       throw new Error('未配置 API Key，使用本地模板生成。前往管理后台设置 Key 即可启用 AI 生成。');
     }
     updateProgress(12,'直连 DeepSeek API...');
-    resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
-      body:JSON.stringify(payload),
-      signal:abortController.signal
-    });
+    const timeoutId=setTimeout(()=>abortController.abort(),12000);
+    try{
+      resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+        body:JSON.stringify(payload),
+        signal:abortController.signal
+      });
+    }finally{
+      clearTimeout(timeoutId);
+    }
   }
 
   if(!resp.ok){
