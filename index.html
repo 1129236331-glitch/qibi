@@ -433,6 +433,7 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
     <span class="foot-name">奇笔 AI</span>
   </div>
   <div class="foot-links">
+    <a href="admin/">管理后台</a>
     <a href="#">使用帮助</a>
     <a href="#">隐私政策</a>
     <a href="#">服务条款</a>
@@ -832,6 +833,12 @@ async function doGen(chapterContext=null){
     console.error('API 调用失败，降级到本地模板:',err.message);
     generationMode='fallback';
     if(err.name==='AbortError'){hideProgress();document.getElementById('obody').textContent='生成已取消';finishGeneration(btn,true);return;}
+    // 通知用户 API 失败原因
+    if(err.message.includes('未配置')){
+      toast('未配置 API Key，使用本地模板生成。请前往管理后台设置 Key 以启用 AI 生成。');
+    }else{
+      toast('AI 引擎暂时不可用（'+err.message+'），已切换本地模板');
+    }
   }
 
   // Fallback: local template
@@ -856,8 +863,13 @@ async function doGen(chapterContext=null){
   if(curTool==='story'&&success&&generationMode==='api'){chapterHistory.push(txt);showChapterNav();}
 }
 
-// API call
+// API call — 直连 DeepSeek，Key 从 localStorage 读取
 async function callDeepSeekAPI(chapterContext=null){
+  const apiKey = localStorage.getItem('qibi_deepseek_key');
+  if(!apiKey){
+    throw new Error('未配置 DeepSeek API Key，请前往<a href="admin/" style="color:#6c5ce7">管理后台</a>设置');
+  }
+
   const t=TOOLS[curTool];
   const extra=document.getElementById('xtra')?.value?.trim()||'';
   const ctx=getContext(curTool,sel,t.sections,t.placeholder);
@@ -866,11 +878,14 @@ async function callDeepSeekAPI(chapterContext=null){
   const wcMap={short:'300-500字',medium:'1000-2000字',long:'3000-5000字'};
   const tokenMap={short:1024,medium:2048,long:4096};
 
-  updateProgress(10,'正在连接 AI 引擎...');
+  updateProgress(10,'正在连接 DeepSeek AI...');
 
-  const resp=await fetch('https://2026-05-25-task-16.vercel.app/api/generate',{
+  const resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Bearer '+apiKey
+    },
     body:JSON.stringify({
       model:'deepseek-chat',
       messages:[{role:'system',content:systemPrompt},{role:'user',content:userPrompt+'\n\n请生成'+wcMap[wordCount]+'的内容。'}],
@@ -880,8 +895,13 @@ async function callDeepSeekAPI(chapterContext=null){
   });
 
   if(!resp.ok){
-    const data=await resp.json().catch(()=>({}));
-    throw new Error(data.error||'API 请求失败 ('+resp.status+')');
+    let errMsg='';
+    try{const d=await resp.json();errMsg=d.error?.message||d.error||'';}catch(e){}
+    if(resp.status===401)errMsg='API Key 无效，请在管理后台更新';
+    else if(resp.status===402)errMsg='API 额度不足，请充值或更换 Key';
+    else if(resp.status===429)errMsg='请求过于频繁，请稍后再试';
+    else if(!errMsg)errMsg='API 请求失败 ('+resp.status+')';
+    throw new Error(errMsg);
   }
 
   updateProgress(25,'AI 正在构思内容...');
