@@ -2,6 +2,9 @@ name: Setup GitHub Pages
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/setup-pages.yml'
 
 permissions:
   pages: write
