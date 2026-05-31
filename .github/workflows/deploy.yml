@@ -3,9 +3,12 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
@@ -14,7 +17,17 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Add .nojekyll
-        run: touch .nojekyll
+        run: |
+          touch .nojekyll
+          touch business-dashboard/.nojekyll 2>/dev/null || true
+
+      - name: Ensure Pages source is gh-pages
+        run: |
+          curl -s -X PUT \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/pages \
+            -d '{"source":{"branch":"gh-pages","path":"/"}}' || true
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
