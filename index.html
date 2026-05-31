@@ -180,6 +180,36 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 .gen-mode{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:2px 9px;border-radius:10px;font-weight:500}
 .gen-mode.api{background:var(--t50);color:var(--t600)}
 .gen-mode.fallback{background:var(--a50);color:var(--a600)}
+
+/* ===== ADMIN MODAL ===== */
+.admin-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center}
+.admin-overlay.show{display:flex}
+.admin-modal{background:#fff;border-radius:20px;width:460px;max-width:92vw;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.2);padding:32px 28px 24px;position:relative}
+.admin-close{position:absolute;top:14px;right:18px;width:32px;height:32px;border-radius:10px;border:none;background:var(--g100);color:var(--g800);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;font-family:inherit}
+.admin-close:hover{background:var(--p100);color:var(--p600)}
+.admin-title{font-size:20px;font-weight:800;color:var(--p900);margin-bottom:6px;display:flex;align-items:center;gap:9px}
+.admin-sub{font-size:13px;color:var(--g400);margin-bottom:24px;line-height:1.6}
+.admin-field{margin-bottom:18px}
+.admin-lbl{font-size:13px;font-weight:600;color:var(--g900);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.admin-select,.admin-input{width:100%;padding:11px 14px;border:.5px solid rgba(0,0,0,.12);border-radius:12px;font-size:14px;font-family:inherit;outline:none;transition:border-color .18s;background:#fafaf9;color:var(--g900)}
+.admin-select:focus,.admin-input:focus{border-color:var(--p400);background:#fff}
+.admin-hint{font-size:11px;color:var(--g400);margin-top:5px}
+.admin-actions{display:flex;gap:10px;margin-top:24px}
+.admin-btn{padding:11px 22px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;border:none}
+.admin-btn.primary{background:linear-gradient(135deg,var(--p600),var(--pk600));color:#fff;flex:1;box-shadow:0 4px 14px rgba(83,74,183,.25)}
+.admin-btn.primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(83,74,183,.35)}
+.admin-btn.secondary{background:var(--g100);color:var(--g800)}
+.admin-btn.secondary:hover{background:var(--p50);color:var(--p600)}
+.admin-status{margin-top:14px;padding:10px 14px;border-radius:10px;font-size:13px;display:none}
+.admin-status.success{display:block;background:var(--t50);color:var(--t600)}
+.admin-status.error{display:block;background:var(--pk50);color:var(--pk600)}
+.admin-footer{padding:14px 0 0;margin-top:18px;border-top:.5px solid rgba(0,0,0,.06);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--g400)}
+.admin-status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
+.admin-status-dot.active{background:var(--t400);animation:p 1s ease-in-out infinite}
+.admin-status-dot.inactive{background:var(--g100)}
+/* Nav admin icon */
+.nav-admin{width:34px;height:34px;border-radius:10px;border:.5px solid rgba(0,0,0,.08);background:var(--g100);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .18s;font-family:inherit;margin-left:4px}
+.nav-admin:hover{background:var(--p50);border-color:var(--p200)}
 </style>
 </head>
 <body>
@@ -197,6 +227,7 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
       <button class="nav-btn" onclick="openTool('story')">小说创作</button>
       <button class="nav-btn" onclick="openTool('copywriting')">营销文案</button>
       <button class="nav-btn nav-cta" onclick="scrollToTools()">立即使用 →</button>
+      <button class="nav-admin" onclick="openAdmin()" title="管理后台">⚙</button>
     </nav>
   </div>
 </header>
@@ -443,6 +474,52 @@ footer{background:#fff;border-top:.5px solid rgba(0,0,0,.06);padding:36px 24px;t
 </footer>
 
 <div id="toast" class="toast"></div>
+
+<!-- ===== ADMIN MODAL ===== -->
+<div id="admin-overlay" class="admin-overlay" onclick="if(event.target===this)closeAdmin()">
+  <div class="admin-modal" onclick="event.stopPropagation()">
+    <button class="admin-close" onclick="closeAdmin()">✕</button>
+    <div class="admin-title">⚙ 管理后台</div>
+    <div class="admin-sub">配置 AI 模型接口，支持 Kimi、DeepSeek 和自定义 API。配置保存后本站所有用户均可通过该模型创作。</div>
+
+    <div class="admin-field">
+      <div class="admin-lbl">🤖 模型提供商</div>
+      <select id="admin-provider" class="admin-select" onchange="onProviderChange()">
+        <option value="kimi">Kimi（月之暗面）</option>
+        <option value="deepseek">DeepSeek</option>
+        <option value="custom">自定义 API</option>
+      </select>
+    </div>
+
+    <div class="admin-field">
+      <div class="admin-lbl">🔗 API 地址</div>
+      <input id="admin-endpoint" class="admin-input" placeholder="https://api.moonshot.cn/v1/chat/completions">
+      <div class="admin-hint" id="admin-endpoint-hint">Kimi 官方接口，兼容 OpenAI 格式</div>
+    </div>
+
+    <div class="admin-field">
+      <div class="admin-lbl">🔑 API Key</div>
+      <input id="admin-apikey" class="admin-input" type="password" placeholder="sk-...">
+      <div class="admin-hint">密钥仅保存在你的浏览器 localStorage 中，不会上传</div>
+    </div>
+
+    <div class="admin-field">
+      <div class="admin-lbl">📦 模型名称</div>
+      <input id="admin-model" class="admin-input" placeholder="moonshot-v1-8k">
+      <div class="admin-hint" id="admin-model-hint">可选：moonshot-v1-8k / moonshot-v1-32k / moonshot-v1-128k</div>
+    </div>
+
+    <div class="admin-actions">
+      <button class="admin-btn secondary" onclick="testConnection()">🔍 测试连接</button>
+      <button class="admin-btn primary" onclick="saveAdminConfig()">💾 保存配置</button>
+    </div>
+    <div id="admin-status" class="admin-status"></div>
+    <div class="admin-footer">
+      <span><span id="admin-dot" class="admin-status-dot inactive"></span><span id="admin-label">未配置</span></span>
+      <span>奇笔 AI v2.0</span>
+    </div>
+  </div>
+</div>
 
 <script>
 // ======= Tool Definitions =======
@@ -875,7 +952,7 @@ async function doGen(chapterContext=null){
   }
 }
 
-// API call — 优先走 Vercel 代理，降级到直连 + localStorage Key
+// API call — 支持 Kimi / DeepSeek / 自定义模型，优先通过管理后台配置
 async function callDeepSeekAPI(chapterContext=null){
   const t=TOOLS[curTool];
   const extra=document.getElementById('xtra')?.value?.trim()||'';
@@ -884,49 +961,54 @@ async function callDeepSeekAPI(chapterContext=null){
   const userPrompt=buildUserPrompt(curTool,ctx,extra,chapterContext);
   const wcMap={short:'300-500字',medium:'1000-2000字',long:'3000-5000字'};
   const tokenMap={short:1024,medium:2048,long:4096};
+
+  // 读取管理后台配置
+  const cfg=getApiConfig();
+  let apiEndpoint, apiKey, modelName, providerName='';
+
+  if(cfg&&cfg.apiKey&&cfg.endpoint&&cfg.model){
+    // 使用管理后台配置（Kimi / DeepSeek / 自定义）
+    apiEndpoint=cfg.endpoint;
+    apiKey=cfg.apiKey;
+    modelName=cfg.model;
+    providerName={kimi:'Kimi',deepseek:'DeepSeek',custom:'自定义'}[cfg.provider]||'AI';
+  }else{
+    // 降级到旧版 DeepSeek Key
+    const legacyKey=localStorage.getItem('qibi_deepseek_key');
+    if(legacyKey){
+      apiEndpoint='https://api.deepseek.com/v1/chat/completions';
+      apiKey=legacyKey;
+      modelName='deepseek-chat';
+      providerName='DeepSeek（旧版）';
+    }
+  }
+
+  if(!apiKey){
+    throw new Error('未配置 API Key，使用本地模板生成。点击右上角 ⚙ 管理后台设置 Kimi/DeepSeek Key 即可启用 AI 生成。');
+  }
+
   const payload={
-    model:'deepseek-chat',
+    model:modelName,
     messages:[{role:'system',content:systemPrompt},{role:'user',content:userPrompt+'\n\n请生成'+wcMap[wordCount]+'的内容。'}],
     stream:true,temperature:0.8,max_tokens:tokenMap[wordCount]||2048
   };
 
-  updateProgress(10,'正在连接 AI 服务...');
+  updateProgress(10,'正在连接 '+providerName+'...');
 
-  // 1) 优先尝试代理（服务端 Key，无 CORS 问题）
-  // GitHub Pages 不支持 serverless functions，直接跳过
-  let resp=null, useProxy=false;
-  const skipProxy = location.hostname.includes('github.io');
-  if(!skipProxy){
-    try{
-      resp=await fetch('/api/proxy',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(payload),
-        signal:abortController.signal
-      });
-      if(resp.ok){useProxy=true;}
-    }catch(e){/* proxy 不可用，走直连 */}
-  }
+  let resp=null;
 
-  // 2) 降级：直连 DeepSeek API（需 localStorage Key）
-  // 添加 12 秒超时保护，防止 API 调用卡住
-  if(!useProxy){
-    const apiKey=localStorage.getItem('qibi_deepseek_key');
-    if(!apiKey){
-      throw new Error('未配置 API Key，使用本地模板生成。前往管理后台设置 Key 即可启用 AI 生成。');
-    }
-    updateProgress(12,'直连 DeepSeek API...');
-    const timeoutId=setTimeout(()=>abortController.abort(),12000);
-    try{
-      resp=await fetch('https://api.deepseek.com/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
-        body:JSON.stringify(payload),
-        signal:abortController.signal
-      });
-    }finally{
-      clearTimeout(timeoutId);
-    }
+  // 直连 API（GitHub Pages 不支持代理，直接请求）
+  updateProgress(12,'调用 '+providerName+' API...');
+  const timeoutId=setTimeout(()=>abortController.abort(),12000);
+  try{
+    resp=await fetch(apiEndpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify(payload),
+      signal:abortController.signal
+    });
+  }finally{
+    clearTimeout(timeoutId);
   }
 
   if(!resp.ok){
@@ -1480,6 +1562,116 @@ function toast(msg){
   el.textContent=msg;el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'),2500);
 }
+
+// ======= Admin Panel =======
+const PROVIDER_CONFIG={
+  kimi:{endpoint:'https://api.moonshot.cn/v1/chat/completions',model:'moonshot-v1-8k',hint:'Kimi 官方接口，兼容 OpenAI 格式',modelHint:'可选：moonshot-v1-8k / moonshot-v1-32k / moonshot-v1-128k'},
+  deepseek:{endpoint:'https://api.deepseek.com/v1/chat/completions',model:'deepseek-chat',hint:'DeepSeek 官方接口',modelHint:'可选：deepseek-chat / deepseek-reasoner'},
+  custom:{endpoint:'',model:'',hint:'输入自定义 API 地址（需兼容 OpenAI Chat Completions 格式）',modelHint:'输入模型名称'}
+};
+
+function openAdmin(){
+  const cfg=getApiConfig();
+  document.getElementById('admin-overlay').classList.add('show');
+  if(cfg){
+    document.getElementById('admin-provider').value=cfg.provider||'kimi';
+    document.getElementById('admin-endpoint').value=cfg.endpoint||'';
+    document.getElementById('admin-apikey').value=cfg.apiKey||'';
+    document.getElementById('admin-model').value=cfg.model||'';
+    updateAdminStatus(cfg);
+  }else{
+    document.getElementById('admin-provider').value='kimi';
+    onProviderChange();
+    document.getElementById('admin-apikey').value='';
+    updateAdminStatus(null);
+  }
+}
+
+function closeAdmin(){
+  document.getElementById('admin-overlay').classList.remove('show');
+}
+
+function onProviderChange(){
+  const p=document.getElementById('admin-provider').value;
+  const cfg=PROVIDER_CONFIG[p];
+  document.getElementById('admin-endpoint').value=cfg.endpoint;
+  document.getElementById('admin-model').value=cfg.model;
+  document.getElementById('admin-endpoint-hint').textContent=cfg.hint;
+  document.getElementById('admin-model-hint').textContent=cfg.modelHint;
+}
+
+function getApiConfig(){
+  try{
+    const raw=localStorage.getItem('qibi_api_config');
+    return raw?JSON.parse(raw):null;
+  }catch(e){return null;}
+}
+
+function saveAdminConfig(){
+  const provider=document.getElementById('admin-provider').value;
+  const endpoint=document.getElementById('admin-endpoint').value.trim();
+  const apiKey=document.getElementById('admin-apikey').value.trim();
+  const model=document.getElementById('admin-model').value.trim();
+  if(!endpoint){showAdminStatus('请输入 API 地址','error');return;}
+  if(!apiKey){showAdminStatus('请输入 API Key','error');return;}
+  if(!model){showAdminStatus('请输入模型名称','error');return;}
+  const cfg={provider,endpoint,apiKey,model,updatedAt:Date.now()};
+  localStorage.setItem('qibi_api_config',JSON.stringify(cfg));
+  updateAdminStatus(cfg);
+  showAdminStatus('✅ 配置已保存！当前模型：'+model,'success');
+  toast('AI 配置已更新 ✓');
+  setTimeout(()=>closeAdmin(),800);
+}
+
+function updateAdminStatus(cfg){
+  const dot=document.getElementById('admin-dot');
+  const label=document.getElementById('admin-label');
+  if(cfg&&cfg.apiKey){
+    dot.className='admin-status-dot active';
+    const pName={kimi:'Kimi',deepseek:'DeepSeek',custom:'自定义'}[cfg.provider]||cfg.provider;
+    label.textContent=pName+' · '+cfg.model;
+  }else{
+    dot.className='admin-status-dot inactive';
+    label.textContent='未配置';
+  }
+}
+
+function showAdminStatus(msg,type){
+  const el=document.getElementById('admin-status');
+  el.textContent=msg;
+  el.className='admin-status '+type;
+  if(type==='success')setTimeout(()=>el.className='admin-status',3000);
+}
+
+async function testConnection(){
+  const endpoint=document.getElementById('admin-endpoint').value.trim();
+  const apiKey=document.getElementById('admin-apikey').value.trim();
+  const model=document.getElementById('admin-model').value.trim();
+  if(!endpoint||!apiKey||!model){showAdminStatus('请填写完整配置后再测试','error');return;}
+  showAdminStatus('⏳ 正在测试连接...','error');
+  try{
+    const resp=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify({model,messages:[{role:'user',content:'你好，请回复"连接成功"'}],stream:false,max_tokens:20}),
+      signal:AbortSignal.timeout(10000)
+    });
+    if(resp.ok){
+      showAdminStatus('✅ 连接成功！模型 '+model+' 工作正常','success');
+    }else{
+      let err='';try{const d=await resp.json();err=d.error?.message||d.error||'';}catch(e){}
+      showAdminStatus('❌ 连接失败 ('+resp.status+'): '+(err||'未知错误'),'error');
+    }
+  }catch(e){
+    showAdminStatus('❌ 连接失败: '+(e.name==='TimeoutError'?'请求超时':e.message),'error');
+  }
+}
+
+// Init admin status on page load
+(function(){
+  const cfg=getApiConfig();
+  if(cfg)updateAdminStatus(cfg);
+})();
 </script>
 <script src="content-data.js"></script>
 </body>
