@@ -788,6 +788,8 @@
       <a onclick="showTool('copywriting')">文案生成</a>
       <a onclick="showTool('email')">邮件撰写</a>
       <a onclick="showTool('social')">社媒内容</a>
+      <a onclick="showTool('children')">儿童读物</a>
+      <a onclick="showTool('biography')">人物自传</a>
       <span id="apikey-badge" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:#00E5A0;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;">✓ AI 已启用</span>
     </nav>
   </div>
@@ -873,6 +875,28 @@
         <div class="card-tags">
           <span class="card-tag" style="background:rgba(249,115,22,0.12);color:#FB923C;">简历</span>
           <span class="card-tag" style="background:rgba(0,229,160,0.12);color:#34D399;">求职</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('children')">
+        <div class="card-icon" style="background:rgba(0,212,255,0.12);">🧒</div>
+        <div class="card-title">儿童读物创作</div>
+        <div class="card-desc">根据年龄、类型和教育主题，AI 生成适合儿童的生动故事，支持童话、寓言、科普等多种类型</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(0,212,255,0.12);color:#22D3EE;">儿童</span>
+          <span class="card-tag" style="background:rgba(139,92,246,0.12);color:#A78BFA;">教育</span>
+          <span class="card-tag" style="background:rgba(236,72,153,0.12);color:#F472B6;">故事</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('biography')">
+        <div class="card-icon" style="background:rgba(245,158,11,0.12);">📜</div>
+        <div class="card-title">人物自传撰写</div>
+        <div class="card-desc">输入人生经历和关键事件，AI 帮你撰写结构完整、情感真挚的人物自传或传记文学</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(245,158,11,0.12);color:#FBBF24;">传记</span>
+          <span class="card-tag" style="background:rgba(249,115,22,0.12);color:#FB923C;">人物</span>
+          <span class="card-tag" style="background:rgba(59,130,246,0.12);color:#60A5FA;">叙事</span>
         </div>
       </div>
 
@@ -1260,6 +1284,88 @@ const TOOLS = {
       });
       return `请根据以下要求生成爆款标题：\n${parts.join('\n')}\n主题：${text || '（请描述文章主题）'}\n\n要求：吸引眼球，有点击欲望，符合平台调性，每个标题独立成行并标注序号。`;
     }
+  },
+  children: {
+    name: '儿童读物创作',
+    icon: '🧒',
+    color: '#E0F4FF',
+    accent: '#0077B6',
+    sections: [
+      {
+        id: 'length', label: '故事长度', required: true, multiple: false,
+        options: ['短篇（约500字）', '中篇（约1200字）']
+      },
+      {
+        id: 'age', label: '适读年龄', required: true, multiple: false,
+        options: ['3-6岁（幼儿）', '6-9岁（低年级）', '9-12岁（高年级）']
+      },
+      {
+        id: 'type', label: '故事类型', required: true, multiple: false,
+        options: ['童话故事', '寓言故事', '科普故事', '冒险故事', '成长故事', '睡前故事', '奇幻故事']
+      },
+      {
+        id: 'character', label: '角色类型', required: false, multiple: true, hint: '可多选',
+        options: ['可爱动物', '勇敢小孩', '智慧老人', '魔法精灵', '恐龙伙伴', '机器人朋友', '会说话的植物']
+      },
+      {
+        id: 'theme', label: '教育主题', required: false, multiple: true, hint: '可多选',
+        options: ['勇敢坚强', '诚实守信', '友爱分享', '保护环境', '想象力', '自理能力', '情绪管理', '感恩的心', '团队合作']
+      },
+      {
+        id: 'style', label: '语言风格', required: true, multiple: false,
+        options: ['简单易懂', '朗朗上口', '互动问答', '拟人化', '幽默风趣']
+      }
+    ],
+    textPlaceholder: '故事背景或特殊要求（可选）：描述你想要的特定角色、场景或故事主题...',
+    generateLabel: '开始创作故事',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'故事长度',age:'适读年龄',type:'故事类型',character:'角色',theme:'教育主题',style:'语言风格'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请根据以下设定，创作一篇适合儿童的精彩故事：\n${parts.join('\n')}${text ? '\n故事背景：'+text : ''}\n\n要求：严格遵循"故事长度"中的字数范围，语言生动有趣，情节简单明了，富有想象力和教育意义，适合指定年龄段儿童阅读。`;
+    }
+  },
+  biography: {
+    name: '人物自传撰写',
+    icon: '📜',
+    color: '#FEF3C7',
+    accent: '#92400E',
+    sections: [
+      {
+        id: 'length', label: '传记篇幅', required: true, multiple: false,
+        options: ['短篇（约1000字）', '中篇（约2500字）']
+      },
+      {
+        id: 'type', label: '自传类型', required: true, multiple: false,
+        options: ['个人成长史', '创业历程', '职业生涯', '学术之路', '艺术人生', '家族传记', '口述历史']
+      },
+      {
+        id: 'period', label: '时间跨度', required: true, multiple: false,
+        options: ['童年时期', '青少年时期', '成年奋斗', '中老年回顾', '一生全览']
+      },
+      {
+        id: 'perspective', label: '叙事视角', required: true, multiple: false,
+        options: ['第一人称（我）', '第三人称（他/她）']
+      },
+      {
+        id: 'tone', label: '风格基调', required: false, multiple: true, hint: '可多选',
+        options: ['励志向上', '温情感人', '轻松幽默', '深沉思考', '朴实真挚', '跌宕起伏']
+      },
+      {
+        id: 'focus', label: '重点突出', required: false, multiple: true, hint: '可多选',
+        options: ['关键转折点', '成就里程碑', '失败与教训', '人生感悟', '社会贡献', '家庭故事', '时代背景']
+      }
+    ],
+    textPlaceholder: '人物简介（必填）：描述人物的基本情况、主要经历、关键事件或想要突出的故事...',
+    generateLabel: '开始撰写自传',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'传记篇幅',type:'自传类型',period:'时间跨度',perspective:'叙事视角',tone:'风格基调',focus:'重点突出'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请根据以下设定，撰写一篇人物自传：\n${parts.join('\n')}\n人物信息：${text || '（请提供人物基本信息）'}\n\n要求：严格遵循"传记篇幅"中的字数范围，叙事结构完整，情感真挚，突出人物性格和关键经历，具有文学性和可读性。`;
+    }
   }
 };
 
@@ -1465,7 +1571,9 @@ function buildSystemPrompt(toolId, selections) {
     resume: `你是一位资深职业规划师和简历优化专家。请根据用户设定的目标岗位、求职层级和优化重点，使用STAR法则优化简历内容。${wordGuide}注意：量化成果数据，使用专业术语，突出核心竞争力。`,
     summary: `你是一位专业的内容提炼师。请根据用户设定的摘要长度和输出格式，准确提炼文章核心内容。${wordGuide}注意：不添加原文没有的信息，语言简洁清晰，结构分明。`,
     translate: `你是一位资深翻译专家。请根据用户设定的翻译方向和风格，提供准确、地道的翻译并润色。${wordGuide}注意：符合目标语言的语言习惯和表达方式，保留原文语气。`,
-    title: `你是一位爆款标题专家，深谙各平台的标题传播规律。请根据用户设定的平台、标题类型和字数要求，生成多个具有高点击率的标题方案。${wordGuide}注意：每个标题独立成行并标注序号，要有吸引力和传播力。`
+    title: `你是一位爆款标题专家，深谙各平台的标题传播规律。请根据用户设定的平台、标题类型和字数要求，生成多个具有高点击率的标题方案。${wordGuide}注意：每个标题独立成行并标注序号，要有吸引力和传播力。`,
+    children: `你是一位资深的儿童文学作家，擅长为不同年龄段的儿童创作故事。你了解儿童心理发展特点，能用孩子喜欢的语言和节奏讲述故事。请根据用户设定的故事长度、适读年龄、故事类型、角色、教育主题和语言风格，创作一篇精彩的儿童读物。${wordGuide}注意：语言要适合指定年龄段，情节简单有趣，富有想象力和正面教育意义，角色形象鲜明可爱。`,
+    biography: `你是一位专业的人物传记作家，擅长以文学化的笔触记录真实人物的人生历程。你善于捕捉人物性格的闪光点和人生关键时刻，用恰当的叙事视角和风格基调呈现人物的精神世界。请根据用户设定的传记篇幅、自传类型、时间跨度、叙事视角、风格基调和重点突出方面，撰写一篇有深度的人物自传。${wordGuide}注意：叙事结构完整，情感真挚，突出人物性格和关键经历，具有文学性和可读性。`
   };
   return base + '\n\n' + (specifics[toolId] || specifics.story);
 }
@@ -1839,7 +1947,78 @@ We look forward to the opportunity to discuss these initiatives in greater detai
 7. 你以为的努力，只是感动了自己而已
 8. 看完这篇文章，我删掉了收藏夹里所有的"有用干货"
 9. 别再问"怎么才能有钱"了，这个问题本身就是错的
-10. 一个让我效率翻倍的小习惯，坚持了1000天`
+10. 一个让我效率翻倍的小习惯，坚持了1000天`,
+
+    children: `🌟 **《勇敢的小水珠》**
+
+从前，在一片翠绿的大森林里，住着一颗名叫叮叮的小水珠。
+
+叮叮和成千上万的兄弟姐妹一起，住在一片又大又圆的荷叶上。每天早晨，太阳公公一出来，叮叮就会在叶子上滚来滚去，像坐滑梯一样，开心极了！
+
+可是叮叮有一个烦恼——他太小了。
+
+"我什么都做不了，"叮叮叹了口气，"风一吹我就跑，太阳一晒我就变小。"
+
+旁边的老青蛙听到了，呱呱笑着说："小水珠啊，你可不要小看自己！知道吗，大海也是由一颗颗小水珠组成的呢。"
+
+"真的吗？"叮叮瞪大了眼睛。
+
+"当然是真的！"老青蛙说，"每一颗小水珠都有自己的使命。有的滋润花朵，有的汇入小溪，有的变成彩虹——"
+
+正说着，一阵大风吹来，叮叮"嗖"的一下被吹到了空中。他害怕极了，紧紧闭着眼睛。等他再睁开时，发现自己正落在干涸的土地上。
+
+"好渴啊……"身边一朵蔫蔫的小花轻轻地说。
+
+叮叮想也没想，滚了过去，把自己融进了泥土里。小花喝到了水，慢慢地抬起了头，花瓣一片片舒展开来。
+
+"谢谢你，小水珠！"小花开心地说。
+
+叮叮笑了。他终于明白了——即使是最渺小的存在，也能带给世界大大的美好。
+
+---
+**📖 故事寄语**：每个孩子都是一颗小水珠，虽然还很小，但已经拥有让世界变得更美好的力量。`,
+    
+    biography: `📜 **《从讲台到田间——李老师的三十年》**
+
+"我这一辈子，最骄傲的不是拿了多少奖，而是看着那些孩子一个个走出大山。"
+
+76岁的李淑华坐在老屋门槛上，望着远处层层叠叠的茶山，目光里满是岁月沉淀后的平静。
+
+**1984年，她23岁。**
+
+师范毕业的李淑华被分配到浙南山区的溪口村小学。学校只有一间土坯房，三个年级挤在一起上课，黑板是木板刷了漆，粉笔要省着用。
+
+"第一天上课，来了17个孩子，最小的5岁，最大的14岁。他们眼睛里的那种渴望，我这辈子都忘不了。"
+
+那一夜，她在煤油灯下写下了日记："留下来，把这些孩子教好。"
+
+这一留，就是三十年。
+
+**1992年，她31岁。**
+
+村里通了公路，但还是没有老师愿意来。李淑华一个人教语文、数学、音乐、体育。她学会了弹脚踏风琴，学会了用竹子做教具，学会了给孩子们剪头发。
+
+那一年，她带的第一个毕业班，6个孩子考上了县里的中学。全村放了一夜的鞭炮。
+
+"我躲在屋里哭了。不是因为舍不得，是因为觉得——值了。"
+
+**2008年，她47岁。**
+
+李淑华的学生里，有人考上了大学，有人成了医生，有人回到村里当了村支书。这一年，她被评为"全国优秀乡村教师"。
+
+去北京领奖那天，她穿上了女儿买的新衣服。站在人民大会堂里，她说的第一句话是："我只是一个普通的乡村教师，我的荣誉属于我的每一个学生。"
+
+**2014年，她53岁。**
+
+退休那天，全村人都来了。从教三十年的最后一堂课，李淑华讲的还是那一篇课文——《种子的力》。
+
+"种子很小，但它有一种谁也挡不住的力量。那就是向上、向光、向着未来生长的力量。你们每一个人，都是一颗种子。"
+
+如今，李淑华在村里办了一个小小的图书室。每到周末，孩子们还是会叫她"李老师"，围坐在一起听她讲故事。
+
+"教书这件事，"她说，"不是谋生，是谋心。"
+
+这是李淑华的故事，也是千千万万乡村教师的故事。他们用一生，在不起眼的地方，做着最了不起的事。`
   };
 
   return samples[toolId] || `正在为您生成内容...\n\n根据您的设定，AI 创作系统正在处理您的请求。实际使用时，这里会接入真实的 AI 模型（如 GPT-4、Claude 等）来生成内容。\n\n设定信息：\n${JSON.stringify(selections, null, 2)}\n\n补充说明：${extra || '无'}`;
