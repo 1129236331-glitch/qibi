@@ -1,29 +1,34 @@
-name: 🚀 Deploy to Vercel
+name: 🚀 Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Deploy to Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-        run: |
-          npm i -g vercel
-          vercel deploy --prod --yes \
-            --token=$VERCEL_TOKEN \
-            --env DEEPSEEK_API_KEY=$DEEPSEEK_API_KEY \
-            --build-env DEEPSEEK_API_KEY=$DEEPSEEK_API_KEY \
-            2>&1 | tee /tmp/vercel-deploy.log
-          
-          # Extract and display deployment URL
-          DEPLOY_URL=$(grep -oP 'https://[a-zA-Z0-9.-]+\.vercel\.app' /tmp/vercel-deploy.log | head -1)
-          echo "🌐 Deployment URL: $DEPLOY_URL"
-          echo "DEPLOY_URL=$DEPLOY_URL" >> $GITHUB_ENV
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

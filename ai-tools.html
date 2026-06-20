@@ -510,6 +510,10 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
   }
+  @keyframes modalIn {
+    0% { opacity: 0; transform: scale(0.92); }
+    100% { opacity: 1; transform: scale(1); }
+  }
   .output-actions {
     display: flex;
     gap: 8px;
@@ -641,6 +645,7 @@
       <a onclick="showTool('copywriting')">文案生成</a>
       <a onclick="showTool('email')">邮件撰写</a>
       <a onclick="showTool('social')">社媒内容</a>
+      <a onclick="showApiKeyModal()" style="display:flex;align-items:center;gap:6px;">⚙️ 设置 <span id="apikey-badge">⚠ 未配置</span></a>
     </nav>
   </div>
 </header>
@@ -1209,11 +1214,91 @@ function toggleTag(el) {
   }
 }
 
+// ==================== API Key Manager ====================
+function getApiKey() {
+  return localStorage.getItem('qibi_deepseek_key') || '';
+}
+function setApiKey(key) {
+  localStorage.setItem('qibi_deepseek_key', key.trim());
+}
+function hasApiKey() {
+  return !!getApiKey();
+}
+function showApiKeyModal() {
+  const modal = document.createElement('div');
+  modal.id = 'apikey-modal';
+  modal.innerHTML = `
+    <div style="position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(30,30,28,0.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
+      <div style="background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(127,119,221,0.15);border-radius:20px;padding:36px 32px;max-width:440px;width:90%;box-shadow:0 24px 80px rgba(83,74,183,0.18);animation:modalIn 0.35s ease-out;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#7F77DD,#E85D8A);display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">🔐</div>
+          <div>
+            <h3 style="font-size:18px;font-weight:700;color:var(--g9);margin:0;">设置 DeepSeek API Key</h3>
+            <p style="font-size:12px;color:var(--g4);margin:4px 0 0;">所有数据仅保存在本地浏览器中</p>
+          </div>
+        </div>
+        <p style="font-size:13px;color:var(--g4);line-height:1.7;margin-bottom:16px;">
+          奇笔AI 需要 DeepSeek API Key 才能生成真实内容。您可以在
+          <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:#534AB7;font-weight:600;">DeepSeek 开放平台</a>
+          免费获取。
+        </p>
+        <input id="apikey-input" type="password" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" value="${getApiKey()}"
+          style="width:100%;padding:14px 18px;border:2px solid rgba(127,119,221,0.15);border-radius:14px;font-size:14px;color:var(--g9);background:rgba(255,255,255,0.7);outline:none;transition:all 0.25s;box-sizing:border-box;margin-bottom:20px;"
+          onfocus="this.style.borderColor='rgba(127,119,221,0.5)';this.style.boxShadow='0 0 0 4px rgba(127,119,221,0.1)';"
+          onblur="this.style.borderColor='rgba(127,119,221,0.15)';this.style.boxShadow='none';"
+        />
+        <div style="display:flex;gap:10px;">
+          <button onclick="saveApiKeyFromModal()" style="flex:1;padding:14px 0;border:none;border-radius:14px;background:linear-gradient(135deg,#7F77DD,#534AB7);color:white;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 15px rgba(127,119,221,0.3);">保存并启用</button>
+          <button onclick="closeApiKeyModal()" style="padding:14px 24px;border:none;border-radius:14px;background:rgba(127,119,221,0.08);color:var(--g4);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;">取消</button>
+        </div>
+        <div style="margin-top:16px;padding:12px 16px;background:linear-gradient(135deg,#EEEDFE,#FBEAF0);border-radius:12px;font-size:12px;color:#534AB7;line-height:1.6;">
+          <b>💡 小贴士：</b>没有 API Key 也可以浏览工具，但会使用本地示例内容。您随时可以点击右上角的设置按钮重新配置。
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  setTimeout(() => document.getElementById('apikey-input').focus(), 100);
+}
+function closeApiKeyModal() {
+  const modal = document.getElementById('apikey-modal');
+  if (modal) modal.remove();
+}
+function saveApiKeyFromModal() {
+  const input = document.getElementById('apikey-input');
+  if (!input) return;
+  const key = input.value.trim();
+  if (!key) {
+    showToast('请输入有效的 API Key');
+    return;
+  }
+  if (!key.startsWith('sk-')) {
+    showToast('API Key 格式不正确，应以 sk- 开头');
+    return;
+  }
+  setApiKey(key);
+  closeApiKeyModal();
+  showToast('✅ API Key 已保存，现在可以使用 AI 实时生成！');
+  updateApiKeyBadge();
+}
+function updateApiKeyBadge() {
+  const badge = document.getElementById('apikey-badge');
+  if (!badge) return;
+  if (hasApiKey()) {
+    badge.innerHTML = '✓ AI 已启用';
+    badge.style.cssText = 'background:linear-gradient(135deg,#D6F5E8,#9DE5C5);color:#0F6E56;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;';
+  } else {
+    badge.innerHTML = '⚠ 未配置';
+    badge.style.cssText = 'background:linear-gradient(135deg,#FCEDE8,#F6CCBB);color:#B83C1B;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;cursor:pointer;';
+    badge.onclick = () => showApiKeyModal();
+  }
+}
+
 // ==================== AI API Configuration ====================
 const AI_CONFIG = {
-  endpoint: '/api/proxy',
+  endpoint: 'https://api.deepseek.com/v1/chat/completions',
   model: 'deepseek-chat',
-  timeout: 60000,  // 60s timeout
+  timeout: 60000,
   maxRetries: 1
 };
 
@@ -1300,10 +1385,9 @@ async function generate() {
       aiError = 'AI 返回内容过短';
     }
   } catch (err) {
-    console.warn('AI API 调用失败，降级到本地样本:', err.message);
+    console.warn('AI API 调用失败:', err.message);
     aiError = err.message;
-    // 检测是否是 API Key 问题
-    if (err.message.includes('Authentication') || err.message.includes('401') || err.message.includes('API Key')) {
+    if (err.message.includes('Authentication') || err.message.includes('401') || err.message.includes('API Key') || err.message.includes('invalid') || err.message.includes('Incorrect')) {
       needApiKey = true;
     }
   }
@@ -1318,11 +1402,12 @@ async function generate() {
       const tipEl = document.createElement('div');
       tipEl.id = 'api-status-tip';
       if (needApiKey) {
-        tipEl.innerHTML = '💡 <b>真 AI 生成未启用</b>：请在 <code>.env</code> 文件中填写你的 <a href="https://platform.deepseek.com/api_keys" target="_blank">DeepSeek API Key</a>，重启服务器即可使用 AI 实时生成。当前显示为本地示例：';
+        tipEl.innerHTML = '💡 <b>真 AI 生成未启用</b>：请在页面右上角点击 <b>⚠ 未配置</b> 设置您的 <a href="https://platform.deepseek.com/api_keys" target="_blank">DeepSeek API Key</a>。当前显示为本地示例：';
       } else {
-        tipEl.innerHTML = `⚠️ AI 服务暂不可用（${aiError.replace(/</g,'&lt;')}），以下为本地示例：`;
+        tipEl.innerHTML = `⚠️ AI 服务暂不可用（${aiError.replace(/</g,'&lt;')}），以下为本地示例：您也可以检查网络连接或更换 API Key。`;
       }
-      tipEl.style.cssText = 'background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#795548;line-height:1.7;';
+      tipEl.style.cssText = 'background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#795548;line-height:1.7;cursor:pointer;';
+      tipEl.onclick = () => showApiKeyModal();
       outputTextEl.parentNode.insertBefore(tipEl, outputTextEl);
     }
     
@@ -1356,13 +1441,20 @@ async function generate() {
 
 // ==================== Real AI API Call (SSE Streaming) ====================
 async function callRealAI(systemPrompt, userPrompt) {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error('请先配置 DeepSeek API Key（点击右上角设置）');
+  }
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), AI_CONFIG.timeout);
 
   try {
     const resp = await fetch(AI_CONFIG.endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey
+      },
       body: JSON.stringify({
         model: AI_CONFIG.model,
         messages: [
@@ -1648,6 +1740,9 @@ function showToast(msg) {
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2500);
 }
+
+// Initialize: check API key status on page load
+updateApiKeyBadge();
 </script>
 </body>
 </html>
