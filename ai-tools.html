@@ -1755,27 +1755,28 @@ async function callRealAI(systemPrompt, userPrompt) {
 }
 
 async function parseSSEStream(resp) {
-    const outputEl = document.getElementById('output-text');
-    outputEl.innerHTML = '';
-    
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let fullContent = '';
-    let buffer = '';
+  const outputEl = document.getElementById('output-text');
+  outputEl.innerHTML = '';
+  
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let fullContent = '';
+  let buffer = '';
 
+  try {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
 
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
-      buffer = lines.pop() || '';  // Keep incomplete line in buffer
+      buffer = lines.pop() || '';
 
       for (const line of lines) {
         const trimmed = line.trim();
         if (!trimmed || !trimmed.startsWith('data: ')) continue;
 
-        const dataStr = trimmed.slice(6); // Remove "data: " prefix
+        const dataStr = trimmed.slice(6);
         if (dataStr === '[DONE]') continue;
 
         try {
@@ -1784,14 +1785,12 @@ async function parseSSEStream(resp) {
           if (delta) {
             fullContent += delta;
             outputEl.textContent = fullContent;
-            // Auto-scroll the output content
             outputEl.scrollTop = outputEl.scrollHeight;
           }
         } catch (_) { /* skip malformed JSON */ }
       }
     }
 
-    // Process remaining buffer
     if (buffer.trim().startsWith('data: ') && buffer.trim() !== 'data: [DONE]') {
       try {
         const json = JSON.parse(buffer.trim().slice(6));
@@ -1805,7 +1804,6 @@ async function parseSSEStream(resp) {
 
     return fullContent;
   } catch (err) {
-    clearTimeout(timeoutId);
     if (err.name === 'AbortError') {
       throw new Error('请求超时（60s），AI 服务响应过慢');
     }
