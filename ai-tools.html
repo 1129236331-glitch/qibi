@@ -954,7 +954,7 @@
 <!-- Footer -->
 <footer>
   <p style="color:var(--text-secondary);">✦ 奇笔AI 2.0 · 让每个人都能轻松创作</p>
-  <p style="margin-top:8px;font-size:12px;">内容由 DeepSeek AI 生成，仅供参考 · <a href="#">使用条款</a> · <a href="#">隐私政策</a></p>
+  <p style="margin-top:8px;font-size:12px;">内容由 AI 生成，仅供参考 · <a href="#">使用条款</a> · <a href="#">隐私政策</a></p>
 </footer>
 
 <script>
@@ -1473,11 +1473,10 @@ function toggleTag(el) {
 
 // ==================== API Key Manager ====================
 function getApiKey() {
-  return 'sk-dfb3ddc8dafc480f8ab3766dd1aee451';
+  return 'ark-fb3796fa-fb13-487d-9007-58b346801a32-2f6a8';
 }
 function setApiKey(key) {
-  // 已硬编码，此函数保留用于兼容
-  localStorage.setItem('qibi_deepseek_key', key.trim());
+  localStorage.setItem('qibi_api_key', key.trim());
 }
 function hasApiKey() {
   return true;
@@ -1491,16 +1490,16 @@ function showApiKeyModal() {
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
           <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#00D4FF,#8B5CF6);display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">🔐</div>
           <div>
-            <h3 style="font-size:18px;font-weight:700;color:#1A1A2E;margin:0;">设置 DeepSeek API Key</h3>
+            <h3 style="font-size:18px;font-weight:700;color:#1A1A2E;margin:0;">设置 AI API Key</h3>
             <p style="font-size:12px;color:#6B6B80;margin:4px 0 0;">所有数据仅保存在本地浏览器中</p>
           </div>
         </div>
         <p style="font-size:13px;color:#6B6B80;line-height:1.7;margin-bottom:16px;">
-          奇笔AI 需要 DeepSeek API Key 才能生成真实内容。您可以在
-          <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:#00D4FF;font-weight:600;">DeepSeek 开放平台</a>
-          免费获取。
+          奇笔AI 需要 API Key 才能生成真实内容。您可以在
+          <a href="https://console.volcengine.com/ark" target="_blank" style="color:#00D4FF;font-weight:600;">火山引擎 Ark 平台</a>
+          获取。
         </p>
-        <input id="apikey-input" type="password" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" value="${getApiKey()}"
+        <input id="apikey-input" type="password" placeholder="ark-xxxxxxxxxxxxxxxxxxxxxxxx" value="${getApiKey()}"
           style="width:100%;padding:14px 18px;border:1px solid rgba(0,0,0,0.10);border-radius:14px;font-size:14px;color:#1A1A2E;background:rgba(0,0,0,0.06);outline:none;transition:all 0.25s;box-sizing:border-box;margin-bottom:20px;"
           onfocus="this.style.borderColor='rgba(0,212,255,0.4)';this.style.boxShadow='0 0 0 3px rgba(0,212,255,0.04)';"
           onblur="this.style.borderColor='rgba(0,0,0,0.10)';this.style.boxShadow='none';"
@@ -1530,8 +1529,8 @@ function saveApiKeyFromModal() {
     showToast('请输入有效的 API Key');
     return;
   }
-  if (!key.startsWith('sk-')) {
-    showToast('API Key 格式不正确，应以 sk- 开头');
+  if (!key.startsWith('ark-')) {
+    showToast('API Key 格式不正确，应以 ark- 开头');
     return;
   }
   setApiKey(key);
@@ -1548,8 +1547,8 @@ function updateApiKeyBadge() {
 
 // ==================== AI API Configuration ====================
 const AI_CONFIG = {
-  endpoint: 'https://api.deepseek.com/v1/chat/completions',
-  model: 'deepseek-chat',
+  endpoint: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+  model: 'doubao-1-5-pro-32k-250115',
   timeout: 60000,
   maxRetries: 1
 };
@@ -1670,7 +1669,7 @@ async function generate() {
   if (statusDot) statusDot.classList.remove('loading');
   const statusText = document.getElementById('status-text');
   if (statusText) {
-    statusText.textContent = aiSuccess ? '✓ 创作完成 · DeepSeek AI' : '✓ 创作完成 · 本地示例';
+    statusText.textContent = aiSuccess ? '✓ 创作完成 · AI' : '✓ 创作完成 · 本地示例';
   }
 
   const outputText = document.getElementById('output-text').textContent;
@@ -1680,7 +1679,7 @@ async function generate() {
   const metaBar = document.getElementById('meta-bar');
   if (metaBar) {
     metaBar.style.display = 'flex';
-    metaBar.innerHTML = `<span>字符数：${charCount}</span><span>约 ${wordCount} 字</span><span>耗时：${elapsed}s</span><span>${aiSuccess ? '🤖 DeepSeek' : '📋 本地'}</span>`;
+    metaBar.innerHTML = `<span>字符数：${charCount}</span><span>约 ${wordCount} 字</span><span>耗时：${elapsed}s</span><span>${aiSuccess ? '🤖 AI' : '📋 本地'}</span>`;
   }
 }
 
@@ -1690,13 +1689,11 @@ async function callRealAI(systemPrompt, userPrompt) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), AI_CONFIG.timeout);
 
-  try {
-    const resp = await fetch(AI_CONFIG.endpoint, {
+  // Try direct API first; fall back to local proxy if CORS blocks
+  const attemptFetch = async (endpoint, headers) => {
+    const resp = await fetch(endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey
-      },
+      headers,
       body: JSON.stringify({
         model: AI_CONFIG.model,
         messages: [
@@ -1709,19 +1706,55 @@ async function callRealAI(systemPrompt, userPrompt) {
       }),
       signal: controller.signal
     });
-
-    clearTimeout(timeoutId);
-
     if (!resp.ok) {
       let errMsg = '';
-      try {
-        const err = await resp.json();
-        errMsg = err.error?.message || `HTTP ${resp.status}`;
-      } catch (_) { errMsg = `HTTP ${resp.status}`; }
+      try { const err = await resp.json(); errMsg = err.error?.message || `HTTP ${resp.status}`; }
+      catch (_) { errMsg = `HTTP ${resp.status}`; }
       throw new Error(errMsg);
     }
+    return resp;
+  };
 
-    // Parse SSE stream
+  try {
+    // 1st: direct API call
+    const resp = await attemptFetch(AI_CONFIG.endpoint, {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey
+    });
+    clearTimeout(timeoutId);
+    return await parseSSEStream(resp);
+  } catch (err) {
+    // 2nd: fallback via local proxy (python3 server.py)
+    if (err.name === 'TypeError' || err.message.includes('Failed to fetch') || err.message.includes('CORS')) {
+      console.warn('Direct API blocked (CORS), trying local proxy...');
+      try {
+        const proxyResp = await fetch('http://localhost:8899/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            category: currentTool,
+            prompt: userPrompt
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (!proxyResp.ok) throw new Error('Proxy error');
+        const data = await proxyResp.json();
+        const outputEl = document.getElementById('output-text');
+        outputEl.textContent = data.content;
+        return data.content;
+      } catch (proxyErr) {
+        console.warn('Local proxy also unavailable:', proxyErr.message);
+        clearTimeout(timeoutId);
+        throw new Error('请先启动本地代理：cd ai-content-bank && python3 server.py');
+      }
+    }
+    clearTimeout(timeoutId);
+    throw err;
+  }
+}
+
+async function parseSSEStream(resp) {
     const outputEl = document.getElementById('output-text');
     outputEl.innerHTML = '';
     
