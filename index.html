@@ -1026,9 +1026,23 @@ async function callDeepSeekAPI(chapterContext=null){
 
   const reader=resp.body.getReader(); const decoder=new TextDecoder();
   let fullText='', buffer='', charCount=0;
+  const READ_TIMEOUT=30000; // 30s 读超时
 
   while(true){
-    const{value,done}=await reader.read();
+    let readResult;
+    try{
+      readResult=await Promise.race([
+        reader.read(),
+        new Promise((_,reject)=>setTimeout(()=>reject(new Error('STREAM_TIMEOUT')),READ_TIMEOUT))
+      ]);
+    }catch(e){
+      if(e.message==='STREAM_TIMEOUT'){
+        reader.cancel('stream read timeout');
+        throw new Error('AI 服务响应超时（30秒无数据），已切换本地模板');
+      }
+      throw e;
+    }
+    const{value,done}=readResult;
     if(done)break;
     buffer+=decoder.decode(value,{stream:true});
     const lines=buffer.split('\n'); buffer=lines.pop()||'';
@@ -1036,15 +1050,15 @@ async function callDeepSeekAPI(chapterContext=null){
       const trimmed=line.trim();
       if(!trimmed||!trimmed.startsWith('data: '))continue;
       const data=trimmed.slice(6);
-      if(data==='[DONE]')break;
+      if(data==='[DONE]'){fullText+='\n'; break;}
       try{
         const parsed=JSON.parse(data);
         const content=parsed.choices?.[0]?.delta?.content||'';
         if(content){fullText+=content; charCount+=content.length;}
       }catch(e){/*skip*/}
     }
-    if(charCount%80===0||charCount<200){
-      const prog=Math.min(25+Math.floor(charCount/20),95);
+    if(charCount>0&&(charCount%80===0||charCount<200)){
+      const prog=Math.min(25+Math.floor(charCount/100),95);
       updateProgress(prog,'已生成 '+charCount+' 字...');
     }
   }
