@@ -645,7 +645,7 @@
       <a onclick="showTool('copywriting')">文案生成</a>
       <a onclick="showTool('email')">邮件撰写</a>
       <a onclick="showTool('social')">社媒内容</a>
-      <a onclick="showApiKeyModal()" style="display:flex;align-items:center;gap:6px;">⚙️ 设置 <span id="apikey-badge">⚠ 未配置</span></a>
+      <span id="apikey-badge" style="background:linear-gradient(135deg,#D6F5E8,#9DE5C5);color:#0F6E56;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;">✓ AI 已启用</span>
     </nav>
   </div>
 </header>
@@ -1216,13 +1216,14 @@ function toggleTag(el) {
 
 // ==================== API Key Manager ====================
 function getApiKey() {
-  return localStorage.getItem('qibi_deepseek_key') || '';
+  return 'sk-dfb3ddc8dafc480f8ab3766dd1aee451';
 }
 function setApiKey(key) {
+  // 已硬编码，此函数保留用于兼容
   localStorage.setItem('qibi_deepseek_key', key.trim());
 }
 function hasApiKey() {
-  return !!getApiKey();
+  return true;
 }
 function showApiKeyModal() {
   const modal = document.createElement('div');
@@ -1284,14 +1285,8 @@ function saveApiKeyFromModal() {
 function updateApiKeyBadge() {
   const badge = document.getElementById('apikey-badge');
   if (!badge) return;
-  if (hasApiKey()) {
-    badge.innerHTML = '✓ AI 已启用';
-    badge.style.cssText = 'background:linear-gradient(135deg,#D6F5E8,#9DE5C5);color:#0F6E56;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;';
-  } else {
-    badge.innerHTML = '⚠ 未配置';
-    badge.style.cssText = 'background:linear-gradient(135deg,#FCEDE8,#F6CCBB);color:#B83C1B;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;cursor:pointer;';
-    badge.onclick = () => showApiKeyModal();
-  }
+  badge.innerHTML = '✓ AI 已启用';
+  badge.style.cssText = 'background:linear-gradient(135deg,#D6F5E8,#9DE5C5);color:#0F6E56;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;';
 }
 
 // ==================== AI API Configuration ====================
@@ -1373,7 +1368,6 @@ async function generate() {
   // ---- Try real AI API first ----
   let aiSuccess = false;
   let aiError = null;
-  let needApiKey = false;
 
   try {
     document.getElementById('status-text').textContent = 'AI 正在为您创作...';
@@ -1387,9 +1381,6 @@ async function generate() {
   } catch (err) {
     console.warn('AI API 调用失败:', err.message);
     aiError = err.message;
-    if (err.message.includes('Authentication') || err.message.includes('401') || err.message.includes('API Key') || err.message.includes('invalid') || err.message.includes('Incorrect')) {
-      needApiKey = true;
-    }
   }
 
   // ---- Fallback: use sample data ----
@@ -1397,17 +1388,12 @@ async function generate() {
     const outputTextEl = document.getElementById('output-text');
     outputTextEl.innerHTML = '';
     
-    // Insert a friendly tip bar before the content
+    // Insert error tip
     if (aiError) {
       const tipEl = document.createElement('div');
       tipEl.id = 'api-status-tip';
-      if (needApiKey) {
-        tipEl.innerHTML = '💡 <b>真 AI 生成未启用</b>：请在页面右上角点击 <b>⚠ 未配置</b> 设置您的 <a href="https://platform.deepseek.com/api_keys" target="_blank">DeepSeek API Key</a>。当前显示为本地示例：';
-      } else {
-        tipEl.innerHTML = `⚠️ AI 服务暂不可用（${aiError.replace(/</g,'&lt;')}），以下为本地示例：您也可以检查网络连接或更换 API Key。`;
-      }
-      tipEl.style.cssText = 'background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#795548;line-height:1.7;cursor:pointer;';
-      tipEl.onclick = () => showApiKeyModal();
+      tipEl.innerHTML = `⚠️ AI 服务暂不可用（${aiError.replace(/</g,'&lt;')}），以下为本地示例。`;
+      tipEl.style.cssText = 'background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#795548;line-height:1.7;';
       outputTextEl.parentNode.insertBefore(tipEl, outputTextEl);
     }
     
@@ -1442,9 +1428,6 @@ async function generate() {
 // ==================== Real AI API Call (SSE Streaming) ====================
 async function callRealAI(systemPrompt, userPrompt) {
   const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error('请先配置 DeepSeek API Key（点击右上角设置）');
-  }
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), AI_CONFIG.timeout);
 
