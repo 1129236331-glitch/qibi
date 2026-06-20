@@ -14,12 +14,12 @@
 
   :root {
     /* ── Surfaces ── */
-    --bg-deep: #05050D;
-    --bg-base: #0A0A16;
-    --bg-surface: rgba(255,255,255,0.025);
-    --bg-elevated: rgba(255,255,255,0.05);
-    --bg-glass: rgba(10,10,22,0.75);
-    --bg-glass-strong: rgba(12,12,26,0.85);
+    --bg-deep: #F8F9FC;
+    --bg-base: #FFFFFF;
+    --bg-surface: rgba(0,0,0,0.015);
+    --bg-elevated: rgba(0,0,0,0.03);
+    --bg-glass: rgba(255,255,255,0.75);
+    --bg-glass-strong: rgba(255,255,255,0.88);
 
     /* ── Accents ── */
     --accent-cyan: #00D4FF;
@@ -38,22 +38,22 @@
     --gradient-subtle: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(139,92,246,0.1));
 
     /* ── Text ── */
-    --text-primary: #E4E4F0;
-    --text-secondary: #9090A8;
-    --text-tertiary: #585870;
+    --text-primary: #1A1A2E;
+    --text-secondary: #6B6B80;
+    --text-tertiary: #9494A8;
     --text-inverse: #0A0A16;
 
     /* ── Borders ── */
-    --border-subtle: rgba(255,255,255,0.05);
-    --border-default: rgba(255,255,255,0.08);
-    --border-strong: rgba(255,255,255,0.14);
+    --border-subtle: rgba(0,0,0,0.04);
+    --border-default: rgba(0,0,0,0.06);
+    --border-strong: rgba(0,0,0,0.10);
     --border-glow: rgba(0,212,255,0.18);
     --border-purple-glow: rgba(139,92,246,0.18);
 
     /* ── Shadows ── */
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 24px rgba(0,0,0,0.4);
-    --shadow-lg: 0 8px 40px rgba(0,0,0,0.6);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
     --shadow-glow-cyan: 0 0 30px rgba(0,212,255,0.12);
     --shadow-glow-purple: 0 0 30px rgba(139,92,246,0.1);
     --shadow-glow-strong: 0 0 40px rgba(0,212,255,0.2), 0 0 60px rgba(139,92,246,0.12);
@@ -100,11 +100,11 @@
   .bg-aurora {
     position: fixed; inset: 0; z-index: -3; pointer-events: none;
     background:
-      radial-gradient(ellipse 70% 55% at 15% 5%, rgba(0,212,255,0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 55% 65% at 80% 15%, rgba(139,92,246,0.06) 0%, transparent 55%),
-      radial-gradient(ellipse 60% 50% at 45% 75%, rgba(236,72,153,0.05) 0%, transparent 50%),
-      radial-gradient(ellipse 45% 45% at 85% 85%, rgba(0,229,160,0.04) 0%, transparent 50%),
-      radial-gradient(ellipse 50% 40% at 5% 90%, rgba(139,92,246,0.04) 0%, transparent 45%);
+      radial-gradient(ellipse 70% 55% at 15% 5%, rgba(0,212,255,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 65% at 80% 15%, rgba(139,92,246,0.03) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 45% 75%, rgba(236,72,153,0.02) 0%, transparent 50%),
+      radial-gradient(ellipse 45% 45% at 85% 85%, rgba(0,229,160,0.02) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 5% 90%, rgba(139,92,246,0.02) 0%, transparent 45%);
     animation: auroraShift 22s ease-in-out infinite alternate;
   }
   @keyframes auroraShift {
@@ -117,8 +117,8 @@
   .bg-grid {
     position: fixed; inset: 0; z-index: -2; pointer-events: none;
     background-image:
-      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
     background-size: 64px 64px;
     background-position: center center;
     mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 15%, transparent 65%);
@@ -129,16 +129,16 @@
   .bg-particles {
     position: fixed; inset: 0; z-index: -1; pointer-events: none;
     background-image:
-      radial-gradient(1.5px 1.5px at 12% 18%, rgba(0,212,255,0.6), transparent),
-      radial-gradient(2px 2px at 78% 12%, rgba(139,92,246,0.5), transparent),
-      radial-gradient(1px 1px at 35% 65%, rgba(236,72,153,0.5), transparent),
-      radial-gradient(2px 2px at 62% 78%, rgba(0,229,160,0.4), transparent),
-      radial-gradient(1px 1px at 88% 35%, rgba(0,212,255,0.55), transparent),
-      radial-gradient(1.5px 1.5px at 22% 82%, rgba(139,92,246,0.45), transparent),
-      radial-gradient(1px 1px at 55% 25%, rgba(236,72,153,0.4), transparent),
-      radial-gradient(2px 2px at 92% 72%, rgba(0,212,255,0.35), transparent),
-      radial-gradient(1px 1px at 8% 45%, rgba(139,92,246,0.5), transparent),
-      radial-gradient(1.5px 1.5px at 68% 8%, rgba(0,229,160,0.45), transparent);
+      radial-gradient(1.5px 1.5px at 12% 18%, rgba(0,212,255,0.25), transparent),
+      radial-gradient(2px 2px at 78% 12%, rgba(139,92,246,0.20), transparent),
+      radial-gradient(1px 1px at 35% 65%, rgba(236,72,153,0.20), transparent),
+      radial-gradient(2px 2px at 62% 78%, rgba(0,229,160,0.18), transparent),
+      radial-gradient(1px 1px at 88% 35%, rgba(0,212,255,0.22), transparent),
+      radial-gradient(1.5px 1.5px at 22% 82%, rgba(139,92,246,0.18), transparent),
+      radial-gradient(1px 1px at 55% 25%, rgba(236,72,153,0.16), transparent),
+      radial-gradient(2px 2px at 92% 72%, rgba(0,212,255,0.14), transparent),
+      radial-gradient(1px 1px at 8% 45%, rgba(139,92,246,0.20), transparent),
+      radial-gradient(1.5px 1.5px at 68% 8%, rgba(0,229,160,0.18), transparent);
     animation: particlesFloat 30s linear infinite;
   }
   @keyframes particlesFloat {
@@ -151,15 +151,15 @@
      HEADER — Frosted Dark Glass
      ============================================================ */
   header {
-    background: rgba(8,8,20,0.78);
+    background: rgba(255,255,255,0.78);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
     padding: 0 2rem;
     position: sticky;
     top: 0;
     z-index: 200;
-    box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 4px 24px rgba(0,0,0,0.5);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03), 0 4px 24px rgba(0,0,0,0.08);
   }
   .header-inner {
     max-width: 1200px; margin: 0 auto;
@@ -191,8 +191,8 @@
     letter-spacing: -0.3px;
   }
   .logo-badge {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.08);
     color: var(--text-secondary);
     font-size: 10px; font-weight: 600;
     padding: 3px 10px; border-radius: 20px;
@@ -207,7 +207,7 @@
     position: relative;
   }
   .header-nav a:hover {
-    background: rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.04);
     color: var(--text-primary);
   }
   .header-nav a.active {
@@ -228,7 +228,7 @@
   .hero-glow {
     position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
     width: 600px; height: 350px;
-    background: radial-gradient(ellipse, rgba(0,212,255,0.08) 0%, rgba(139,92,246,0.05) 40%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(0,212,255,0.04) 0%, rgba(139,92,246,0.03) 40%, transparent 70%);
     pointer-events: none;
     animation: heroGlowBreathe 5s ease-in-out infinite;
     filter: blur(20px);
@@ -239,8 +239,8 @@
   }
   .hero-tag {
     display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.07);
     color: var(--accent-cyan);
     font-size: 12px; font-weight: 600;
     padding: 6px 18px; border-radius: 20px;
@@ -296,7 +296,7 @@
   }
   .stat-sep {
     width: 1px; height: 32px;
-    background: linear-gradient(180deg, transparent, rgba(255,255,255,0.12), transparent);
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.10), transparent);
   }
 
   /* ============================================================
@@ -324,7 +324,7 @@
     gap: 16px; margin-bottom: 3rem;
   }
   .tool-card {
-    background: rgba(255,255,255,0.025);
+    background: rgba(0,0,0,0.02);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-radius: var(--radius-lg);
@@ -371,14 +371,14 @@
 
   .tool-card:hover {
     transform: translateY(-4px);
-    background: rgba(255,255,255,0.04);
+    background: rgba(0,0,0,0.03);
     border-color: rgba(0,212,255,0.2);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.08);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,212,255,0.04);
   }
   .tool-card.active {
-    border-color: rgba(0,212,255,0.35);
+    border-color: rgba(0,212,255,0.14);
     background: rgba(0,212,255,0.04);
-    box-shadow: 0 0 0 1px rgba(0,212,255,0.15), 0 0 30px rgba(0,212,255,0.06), 0 8px 32px rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 1px rgba(0,212,255,0.15), 0 0 30px rgba(0,212,255,0.06), 0 8px 32px rgba(0,0,0,0.10);
   }
 
   .card-icon {
@@ -427,8 +427,8 @@
   .workspace-back {
     width: 38px; height: 38px;
     border-radius: 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.06);
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; font-size: 16px;
     transition: all 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -436,10 +436,10 @@
     flex-shrink: 0;
   }
   .workspace-back:hover {
-    background: rgba(0,212,255,0.08);
+    background: rgba(0,212,255,0.04);
     border-color: rgba(0,212,255,0.25);
     color: var(--accent-cyan);
-    box-shadow: 0 0 16px rgba(0,212,255,0.08);
+    box-shadow: 0 0 16px rgba(0,212,255,0.04);
     transform: translateX(-3px);
   }
   .workspace-title {
@@ -453,7 +453,7 @@
 
   /* ═══ Form Sections ═══ */
   .form-section {
-    background: rgba(255,255,255,0.025);
+    background: rgba(0,0,0,0.02);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: var(--radius-lg);
@@ -464,12 +464,12 @@
     position: relative;
   }
   .form-section:hover {
-    border-color: rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.035);
+    border-color: rgba(0,0,0,0.07);
+    background: rgba(0,0,0,0.03);
   }
   .form-section:focus-within {
     border-color: rgba(0,212,255,0.25);
-    box-shadow: 0 0 0 1px rgba(0,212,255,0.08), 0 0 24px rgba(0,212,255,0.04);
+    box-shadow: 0 0 0 1px rgba(0,212,255,0.04), 0 0 24px rgba(0,212,255,0.04);
   }
   .form-label {
     font-size: 14px; font-weight: 600;
@@ -497,8 +497,8 @@
   .tag-btn {
     padding: 8px 18px;
     border-radius: 22px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(0,0,0,0.06);
+    background: rgba(0,0,0,0.02);
     font-size: 13px;
     cursor: pointer;
     transition: all 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -524,7 +524,7 @@
   /* ═══ Textarea ═══ */
   textarea {
     width: 100%;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(0,0,0,0.06);
     border-radius: 14px;
     padding: 14px 18px;
     font-size: 14px;
@@ -538,8 +538,8 @@
     min-height: 90px;
   }
   textarea:focus {
-    border-color: rgba(0,212,255,0.35);
-    background: rgba(0,0,0,0.3);
+    border-color: rgba(0,212,255,0.14);
+    background: rgba(0,0,0,0.06);
     box-shadow: 0 0 0 3px rgba(0,212,255,0.06), 0 0 20px rgba(0,212,255,0.04);
   }
   textarea::placeholder { color: var(--text-tertiary); opacity: 0.7; }
@@ -568,7 +568,7 @@
   .generate-btn::after {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    background: linear-gradient(135deg, rgba(139,92,246,0.08) 0%, transparent 50%);
     opacity: 0; transition: opacity 0.3s ease;
   }
   @keyframes btnShimmer {
@@ -577,7 +577,7 @@
   }
   .generate-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 36px rgba(0,212,255,0.35), 0 0 55px rgba(139,92,246,0.2), 0 0 80px rgba(236,72,153,0.08);
+    box-shadow: 0 6px 36px rgba(0,212,255,0.14), 0 0 55px rgba(139,92,246,0.2), 0 0 80px rgba(236,72,153,0.08);
   }
   .generate-btn:hover::after { opacity: 1; }
   .generate-btn:active { transform: translateY(0); }
@@ -585,7 +585,7 @@
     opacity: 0.55;
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
     animation: none;
   }
   .generate-btn:disabled::after { opacity: 0; }
@@ -595,7 +595,7 @@
      OUTPUT AREA
      ============================================================ */
   .output-area {
-    background: rgba(255,255,255,0.025);
+    background: rgba(0,0,0,0.02);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: var(--radius-lg);
@@ -603,12 +603,12 @@
     margin-top: 1.5rem;
     overflow: hidden;
     display: none;
-    box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
   }
   .output-area.visible { display: block; }
   .output-header {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
     display: flex; align-items: center; justify-content: space-between;
   }
   .output-header-left {
@@ -619,7 +619,7 @@
   .output-status {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--accent-teal);
-    box-shadow: 0 0 8px rgba(0,229,160,0.4);
+    box-shadow: 0 0 8px rgba(0,229,160,0.18);
   }
   .output-status.loading {
     background: var(--accent-amber);
@@ -633,9 +633,9 @@
   .output-actions { display: flex; gap: 8px; }
   .action-btn {
     padding: 6px 16px;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(0,0,0,0.07);
     border-radius: 10px;
-    background: rgba(255,255,255,0.03);
+    background: rgba(0,0,0,0.02);
     font-size: 12px;
     cursor: pointer;
     color: var(--text-secondary);
@@ -683,7 +683,7 @@
   /* Meta bar */
   .meta-bar {
     padding: 10px 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid rgba(0,0,0,0.05);
     display: flex; gap: 18px; flex-wrap: wrap;
     font-size: 12px; color: var(--text-tertiary);
   }
@@ -695,7 +695,7 @@
   footer {
     text-align: center; padding: 2.5rem;
     font-size: 13px; color: var(--text-tertiary);
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(0,0,0,0.04);
     background: rgba(0,0,0,0.15);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -713,10 +713,10 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.06);
     border-radius: 3px;
   }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.14); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
 
   /* ============================================================
      TOAST
@@ -724,10 +724,10 @@
   .toast {
     position: fixed; bottom: 2rem; left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: rgba(20,20,35,0.95);
+    background: rgba(255,255,255,0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(0,0,0,0.08);
     color: var(--text-primary);
     padding: 12px 24px;
     border-radius: 20px;
@@ -736,7 +736,7 @@
     transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
     z-index: 999;
     pointer-events: none;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
   }
   .toast.show {
     opacity: 1;
@@ -1381,27 +1381,27 @@ function showApiKeyModal() {
   modal.id = 'apikey-modal';
   modal.innerHTML = `
     <div style="position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(5,5,13,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
-      <div style="background:rgba(15,15,28,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:36px 32px;max-width:440px;width:90%;box-shadow:0 24px 80px rgba(0,0,0,0.6),0 0 40px rgba(0,212,255,0.05);animation:modalIn 0.35s ease-out;">
+      <div style="background:rgba(255,255,255,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(0,0,0,0.07);border-radius:24px;padding:36px 32px;max-width:440px;width:90%;box-shadow:0 24px 80px rgba(0,0,0,0.12),0 0 40px rgba(0,212,255,0.05);animation:modalIn 0.35s ease-out;">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
           <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#00D4FF,#8B5CF6);display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">🔐</div>
           <div>
-            <h3 style="font-size:18px;font-weight:700;color:#E4E4F0;margin:0;">设置 DeepSeek API Key</h3>
-            <p style="font-size:12px;color:#9090A8;margin:4px 0 0;">所有数据仅保存在本地浏览器中</p>
+            <h3 style="font-size:18px;font-weight:700;color:#1A1A2E;margin:0;">设置 DeepSeek API Key</h3>
+            <p style="font-size:12px;color:#6B6B80;margin:4px 0 0;">所有数据仅保存在本地浏览器中</p>
           </div>
         </div>
-        <p style="font-size:13px;color:#9090A8;line-height:1.7;margin-bottom:16px;">
+        <p style="font-size:13px;color:#6B6B80;line-height:1.7;margin-bottom:16px;">
           奇笔AI 需要 DeepSeek API Key 才能生成真实内容。您可以在
           <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:#00D4FF;font-weight:600;">DeepSeek 开放平台</a>
           免费获取。
         </p>
         <input id="apikey-input" type="password" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" value="${getApiKey()}"
-          style="width:100%;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:14px;font-size:14px;color:#E4E4F0;background:rgba(0,0,0,0.3);outline:none;transition:all 0.25s;box-sizing:border-box;margin-bottom:20px;"
-          onfocus="this.style.borderColor='rgba(0,212,255,0.4)';this.style.boxShadow='0 0 0 3px rgba(0,212,255,0.08)';"
-          onblur="this.style.borderColor='rgba(255,255,255,0.12)';this.style.boxShadow='none';"
+          style="width:100%;padding:14px 18px;border:1px solid rgba(0,0,0,0.10);border-radius:14px;font-size:14px;color:#1A1A2E;background:rgba(0,0,0,0.06);outline:none;transition:all 0.25s;box-sizing:border-box;margin-bottom:20px;"
+          onfocus="this.style.borderColor='rgba(0,212,255,0.4)';this.style.boxShadow='0 0 0 3px rgba(0,212,255,0.04)';"
+          onblur="this.style.borderColor='rgba(0,0,0,0.10)';this.style.boxShadow='none';"
         />
         <div style="display:flex;gap:10px;">
           <button onclick="saveApiKeyFromModal()" style="flex:1;padding:14px 0;border:none;border-radius:14px;background:linear-gradient(135deg,#00D4FF,#8B5CF6);color:white;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(0,212,255,0.2);">保存并启用</button>
-          <button onclick="closeApiKeyModal()" style="padding:14px 24px;border:1px solid rgba(255,255,255,0.1);border-radius:14px;background:rgba(255,255,255,0.04);color:#9090A8;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;">取消</button>
+          <button onclick="closeApiKeyModal()" style="padding:14px 24px;border:1px solid rgba(0,0,0,0.07);border-radius:14px;background:rgba(0,0,0,0.04);color:#6B6B80;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;">取消</button>
         </div>
         <div style="margin-top:16px;padding:12px 16px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.12);border-radius:12px;font-size:12px;color:#00D4FF;line-height:1.6;">
           <b>💡 小贴士：</b>没有 API Key 也可以浏览工具，但会使用本地示例内容。您随时可以点击右上角的设置按钮重新配置。
