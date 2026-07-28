@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>奇笔AI 2.0 · 智能创作工具集</title>
+<style>
+  /* ============================================================
+     DARK TECH THEME — 奇笔AI 2.0
+     Design System: Deep Space + Cyan/Purple Accents
+     ============================================================ */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    /* ── Surfaces ── */
+    --bg-deep: #F8F9FC;
+    --bg-base: #FFFFFF;
+    --bg-surface: rgba(0,0,0,0.015);
+    --bg-elevated: rgba(0,0,0,0.03);
+    --bg-glass: rgba(255,255,255,0.75);
+    --bg-glass-strong: rgba(255,255,255,0.88);
+
+    /* ── Accents ── */
+    --accent-cyan: #00D4FF;
+    --accent-purple: #8B5CF6;
+    --accent-pink: #EC4899;
+    --accent-teal: #00E5A0;
+    --accent-amber: #F59E0B;
+    --accent-blue: #3B82F6;
+    --accent-orange: #F97316;
+    --accent-lime: #84CC16;
+
+    /* ── Gradients ── */
+    --gradient-primary: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 50%, #EC4899 100%);
+    --gradient-cyan-purple: linear-gradient(135deg, #00D4FF, #8B5CF6);
+    --gradient-purple-pink: linear-gradient(135deg, #8B5CF6, #EC4899);
+    --gradient-subtle: linear-gradient(135deg, rgba(0,212,255,0.12), rgba(139,92,246,0.1));
+
+    /* ── Text ── */
+    --text-primary: #1A1A2E;
+    --text-secondary: #6B6B80;
+    --text-tertiary: #9494A8;
+    --text-inverse: #0A0A16;
+
+    /* ── Borders ── */
+    --border-subtle: rgba(0,0,0,0.04);
+    --border-default: rgba(0,0,0,0.06);
+    --border-strong: rgba(0,0,0,0.10);
+    --border-glow: rgba(0,212,255,0.18);
+    --border-purple-glow: rgba(139,92,246,0.18);
+
+    /* ── Shadows ── */
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+    --shadow-glow-cyan: 0 0 30px rgba(0,212,255,0.12);
+    --shadow-glow-purple: 0 0 30px rgba(139,92,246,0.1);
+    --shadow-glow-strong: 0 0 40px rgba(0,212,255,0.2), 0 0 60px rgba(139,92,246,0.12);
+
+    /* ── Radii ── */
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+
+    /* ── Spacing ── */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+    --space-3xl: 64px;
+  }
+
+  /* ============================================================
+     BASE
+     ============================================================ */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Inter', sans-serif;
+    background: var(--bg-deep);
+    min-height: 100vh;
+    color: var(--text-primary);
+    position: relative;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ═══ Background Layers ═══ */
+  /* Layer 1: Solid deep base */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -4;
+    background: var(--bg-deep);
+  }
+
+  /* Layer 2: Aurora gradient blobs */
+  .bg-aurora {
+    position: fixed; inset: 0; z-index: -3; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 55% at 15% 5%, rgba(0,212,255,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 55% 65% at 80% 15%, rgba(139,92,246,0.03) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 45% 75%, rgba(236,72,153,0.02) 0%, transparent 50%),
+      radial-gradient(ellipse 45% 45% at 85% 85%, rgba(0,229,160,0.02) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 5% 90%, rgba(139,92,246,0.02) 0%, transparent 45%);
+    animation: auroraShift 22s ease-in-out infinite alternate;
+  }
+  @keyframes auroraShift {
+    0%   { opacity: 0.6; transform: scale(1) rotate(0deg); }
+    50%  { opacity: 1;   transform: scale(1.06) rotate(1.5deg); }
+    100% { opacity: 0.7; transform: scale(1.03) rotate(-1deg); }
+  }
+
+  /* Layer 3: Tech grid */
+  .bg-grid {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center center;
+    mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 15%, transparent 65%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, black 15%, transparent 65%);
+  }
+
+  /* Layer 4: Floating particles */
+  .bg-particles {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image:
+      radial-gradient(1.5px 1.5px at 12% 18%, rgba(0,212,255,0.25), transparent),
+      radial-gradient(2px 2px at 78% 12%, rgba(139,92,246,0.20), transparent),
+      radial-gradient(1px 1px at 35% 65%, rgba(236,72,153,0.20), transparent),
+      radial-gradient(2px 2px at 62% 78%, rgba(0,229,160,0.18), transparent),
+      radial-gradient(1px 1px at 88% 35%, rgba(0,212,255,0.22), transparent),
+      radial-gradient(1.5px 1.5px at 22% 82%, rgba(139,92,246,0.18), transparent),
+      radial-gradient(1px 1px at 55% 25%, rgba(236,72,153,0.16), transparent),
+      radial-gradient(2px 2px at 92% 72%, rgba(0,212,255,0.14), transparent),
+      radial-gradient(1px 1px at 8% 45%, rgba(139,92,246,0.20), transparent),
+      radial-gradient(1.5px 1.5px at 68% 8%, rgba(0,229,160,0.18), transparent);
+    animation: particlesFloat 30s linear infinite;
+  }
+  @keyframes particlesFloat {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+    50%  { transform: translateY(-12px) rotate(0.5deg); opacity: 1; }
+    100% { transform: translateY(-24px) rotate(1deg); opacity: 0.8; }
+  }
+
+  /* ============================================================
+     HEADER — Frosted Dark Glass
+     ============================================================ */
+  header {
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.03), 0 4px 24px rgba(0,0,0,0.08);
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto;
+    height: 62px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px; cursor: pointer;
+  }
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: var(--gradient-primary);
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 18px; font-weight: 700;
+    box-shadow: 0 0 20px rgba(0,212,255,0.3), 0 0 40px rgba(139,92,246,0.2);
+    animation: logoGlow 3s ease-in-out infinite;
+  }
+  @keyframes logoGlow {
+    0%,100% { box-shadow: 0 0 20px rgba(0,212,255,0.3), 0 0 40px rgba(139,92,246,0.2); }
+    50%     { box-shadow: 0 0 30px rgba(0,212,255,0.5), 0 0 55px rgba(139,92,246,0.35), 0 0 70px rgba(236,72,153,0.15); }
+  }
+  .logo-name {
+    font-size: 18px; font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.3px;
+  }
+  .logo-badge {
+    background: rgba(0,0,0,0.04);
+    border: 1px solid rgba(0,0,0,0.08);
+    color: var(--text-secondary);
+    font-size: 10px; font-weight: 600;
+    padding: 3px 10px; border-radius: 20px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+  .header-nav { display: flex; gap: 4px; align-items: center; }
+  .header-nav a {
+    font-size: 13px; color: var(--text-secondary); text-decoration: none;
+    padding: 6px 14px; border-radius: 20px;
+    transition: all 0.22s ease; cursor: pointer; font-weight: 500;
+    position: relative;
+  }
+  .header-nav a:hover {
+    background: rgba(0,0,0,0.04);
+    color: var(--text-primary);
+  }
+  .header-nav a.active {
+    background: rgba(0,212,255,0.1);
+    color: var(--accent-cyan);
+    font-weight: 600;
+  }
+
+  /* ============================================================
+     HERO — Dramatic Tech Landing
+     ============================================================ */
+  .hero {
+    text-align: center;
+    padding: 5rem 2rem 3.5rem;
+    max-width: 760px; margin: 0 auto;
+    position: relative;
+  }
+  .hero-glow {
+    position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 350px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.04) 0%, rgba(139,92,246,0.03) 40%, transparent 70%);
+    pointer-events: none;
+    animation: heroGlowBreathe 5s ease-in-out infinite;
+    filter: blur(20px);
+  }
+  @keyframes heroGlowBreathe {
+    0%,100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+    50%     { opacity: 1;   transform: translateX(-50%) scale(1.18); }
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.07);
+    color: var(--accent-cyan);
+    font-size: 12px; font-weight: 600;
+    padding: 6px 18px; border-radius: 20px;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: tagFloat 3s ease-in-out infinite;
+    letter-spacing: 0.3px;
+  }
+  @keyframes tagFloat {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-4px); }
+  }
+  .hero-tag::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px var(--accent-cyan);
+    animation: dotPulse 1.8s infinite;
+  }
+  @keyframes dotPulse {
+    0%,100% { opacity: 1; transform: scale(1); box-shadow: 0 0 8px var(--accent-cyan); }
+    50%     { opacity: 0.3; transform: scale(0.6); box-shadow: 0 0 2px var(--accent-cyan); }
+  }
+  .hero h1 {
+    font-size: clamp(38px, 6.5vw, 58px); font-weight: 800;
+    line-height: 1.12; letter-spacing: -1.5px;
+    margin-bottom: 1.2rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative; z-index: 1;
+  }
+  .hero p {
+    font-size: 17px; color: var(--text-secondary); line-height: 1.9;
+    margin-bottom: 2.5rem; position: relative; z-index: 1;
+  }
+  .hero-stats {
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px; flex-wrap: wrap; position: relative; z-index: 1;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-size: 30px; font-weight: 800;
+    background: var(--gradient-cyan-purple);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat-label {
+    font-size: 12px; color: var(--text-tertiary); margin-top: 4px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .stat-sep {
+    width: 1px; height: 32px;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.10), transparent);
+  }
+
+  /* ============================================================
+     TOOL CARDS — Dark Glass + Glow Borders
+     ============================================================ */
+  .tools-section {
+    max-width: 1200px; margin: 0 auto; padding: 0 2rem 4rem;
+  }
+  .section-title {
+    font-size: 19px; font-weight: 700; color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 12px;
+    letter-spacing: -0.3px;
+  }
+  .section-title::before {
+    content: '';
+    display: block;
+    width: 3px; height: 22px;
+    background: var(--gradient-cyan-purple);
+    border-radius: 2px;
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(276px, 1fr));
+    gap: 16px; margin-bottom: 3rem;
+  }
+  .tool-card {
+    background: rgba(0,0,0,0.02);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    position: relative; overflow: hidden;
+    animation: cardIn 0.5s ease-out backwards;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tool-card:nth-child(1) { animation-delay: 0.05s; }
+  .tool-card:nth-child(2) { animation-delay: 0.1s; }
+  .tool-card:nth-child(3) { animation-delay: 0.15s; }
+  .tool-card:nth-child(4) { animation-delay: 0.2s; }
+  .tool-card:nth-child(5) { animation-delay: 0.25s; }
+  .tool-card:nth-child(6) { animation-delay: 0.3s; }
+  .tool-card:nth-child(7) { animation-delay: 0.05s; }
+  .tool-card:nth-child(8) { animation-delay: 0.1s; }
+  .tool-card:nth-child(9) { animation-delay: 0.15s; }
+
+  /* Glow line on hover */
+  .tool-card::before {
+    content: '';
+    position: absolute; top: 0; left: -100%; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.7), rgba(139,92,246,0.7), transparent);
+    transition: left 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .tool-card:hover::before { left: 0; }
+
+  /* Corner highlight */
+  .tool-card::after {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at 100% 0%, rgba(0,212,255,0.06), transparent 70%);
+    opacity: 0; transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .tool-card:hover::after { opacity: 1; }
+
+  .tool-card:hover {
+    transform: translateY(-4px);
+    background: rgba(0,0,0,0.03);
+    border-color: rgba(0,212,255,0.2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,212,255,0.04);
+  }
+  .tool-card.active {
+    border-color: rgba(0,212,255,0.14);
+    background: rgba(0,212,255,0.04);
+    box-shadow: 0 0 0 1px rgba(0,212,255,0.15), 0 0 30px rgba(0,212,255,0.06), 0 8px 32px rgba(0,0,0,0.10);
+  }
+
+  .card-icon {
+    width: 48px; height: 48px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative; z-index: 1;
+  }
+  .tool-card:hover .card-icon {
+    transform: scale(1.08);
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; margin-bottom: 6px;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+  .card-desc {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .card-tag {
+    font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500;
+    letter-spacing: 0.2px;
+  }
+
+  /* ============================================================
+     WORKSPACE — Tool Detail Area
+     ============================================================ */
+  .tool-workspace {
+    max-width: 900px;
+    margin: 0 auto 4rem;
+    padding: 2rem;
+    display: none;
+  }
+  .tool-workspace.visible { display: block; }
+
+  .workspace-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+    padding: 0.5rem 0;
+  }
+  .workspace-back {
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.06);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px;
+    transition: all 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+    color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+  .workspace-back:hover {
+    background: rgba(0,212,255,0.04);
+    border-color: rgba(0,212,255,0.25);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 16px rgba(0,212,255,0.04);
+    transform: translateX(-3px);
+  }
+  .workspace-title {
+    font-size: 22px; font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+  }
+
+  /* ═══ Form Sections ═══ */
+  .form-section {
+    background: rgba(0,0,0,0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.28s ease;
+    position: relative;
+  }
+  .form-section:hover {
+    border-color: rgba(0,0,0,0.07);
+    background: rgba(0,0,0,0.03);
+  }
+  .form-section:focus-within {
+    border-color: rgba(0,212,255,0.25);
+    box-shadow: 0 0 0 1px rgba(0,212,255,0.04), 0 0 24px rgba(0,212,255,0.04);
+  }
+  .form-label {
+    font-size: 14px; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+    letter-spacing: -0.2px;
+  }
+  .form-label .required {
+    background: var(--gradient-cyan-purple);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 11px; font-weight: 700;
+  }
+  .form-label .hint {
+    color: var(--text-tertiary);
+    font-size: 12px; font-weight: 400;
+  }
+
+  /* ═══ Tag Buttons ═══ */
+  .tag-group {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .tag-btn {
+    padding: 8px 18px;
+    border-radius: 22px;
+    border: 1px solid rgba(0,0,0,0.06);
+    background: rgba(0,0,0,0.02);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+    color: var(--text-secondary);
+    user-select: none; font-weight: 500;
+    position: relative;
+  }
+  .tag-btn:hover {
+    border-color: rgba(0,212,255,0.3);
+    color: var(--accent-cyan);
+    background: rgba(0,212,255,0.06);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 12px rgba(0,212,255,0.06);
+  }
+  .tag-btn.selected {
+    background: var(--gradient-cyan-purple);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 2px 16px rgba(0,212,255,0.25), 0 0 20px rgba(139,92,246,0.1);
+    font-weight: 600;
+  }
+
+  /* ═══ Textarea ═══ */
+  textarea {
+    width: 100%;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 14px;
+    padding: 14px 18px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-primary);
+    resize: vertical;
+    outline: none;
+    transition: all 0.28s ease;
+    background: rgba(0,0,0,0.2);
+    line-height: 1.7;
+    min-height: 90px;
+  }
+  textarea:focus {
+    border-color: rgba(0,212,255,0.14);
+    background: rgba(0,0,0,0.06);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.06), 0 0 20px rgba(0,212,255,0.04);
+  }
+  textarea::placeholder { color: var(--text-tertiary); opacity: 0.7; }
+
+  /* ═══ Generate Button ═══ */
+  .generate-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--gradient-primary);
+    background-size: 200% 200%;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px;
+    margin-top: 1rem;
+    box-shadow: 0 4px 28px rgba(0,212,255,0.25), 0 0 40px rgba(139,92,246,0.1);
+    animation: btnShimmer 4s ease-in-out infinite;
+    position: relative; overflow: hidden;
+    letter-spacing: 0.3px;
+  }
+  /* Inner glow on hover */
+  .generate-btn::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(139,92,246,0.08) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  @keyframes btnShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  .generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 36px rgba(0,212,255,0.14), 0 0 55px rgba(139,92,246,0.2), 0 0 80px rgba(236,72,153,0.08);
+  }
+  .generate-btn:hover::after { opacity: 1; }
+  .generate-btn:active { transform: translateY(0); }
+  .generate-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    animation: none;
+  }
+  .generate-btn:disabled::after { opacity: 0; }
+  .btn-icon { font-size: 18px; }
+
+  /* ============================================================
+     OUTPUT AREA
+     ============================================================ */
+  .output-area {
+    background: rgba(0,0,0,0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    margin-top: 1.5rem;
+    overflow: hidden;
+    display: none;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+  }
+  .output-area.visible { display: block; }
+  .output-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .output-header-left {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-secondary);
+  }
+  .output-status {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent-teal);
+    box-shadow: 0 0 8px rgba(0,229,160,0.18);
+  }
+  .output-status.loading {
+    background: var(--accent-amber);
+    box-shadow: 0 0 8px rgba(245,158,11,0.4);
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.25; transform: scale(0.75); }
+  }
+  .output-actions { display: flex; gap: 8px; }
+  .action-btn {
+    padding: 6px 16px;
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 10px;
+    background: rgba(0,0,0,0.02);
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.22s ease;
+    font-weight: 500;
+  }
+  .action-btn:hover {
+    background: rgba(0,212,255,0.06);
+    border-color: rgba(0,212,255,0.25);
+    color: var(--accent-cyan);
+  }
+  .output-content {
+    padding: 1.5rem;
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    min-height: 120px;
+    max-height: 60vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+  .output-placeholder {
+    color: var(--text-tertiary);
+    font-size: 14px; text-align: center; padding: 3rem;
+  }
+
+  /* Loading animation */
+  .typing-indicator {
+    display: inline-flex; gap: 5px; align-items: center;
+  }
+  .typing-indicator span {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent-cyan);
+    animation: typing 1.2s infinite;
+    box-shadow: 0 0 6px rgba(0,212,255,0.3);
+  }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; background: var(--accent-purple); box-shadow: 0 0 6px rgba(139,92,246,0.3); }
+  @keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+    30%           { transform: translateY(-5px); opacity: 1; }
+  }
+
+  /* Meta bar */
+  .meta-bar {
+    padding: 10px 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-size: 12px; color: var(--text-tertiary);
+  }
+  .meta-bar span { display: flex; align-items: center; gap: 4px; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer {
+    text-align: center; padding: 2.5rem;
+    font-size: 13px; color: var(--text-tertiary);
+    border-top: 1px solid rgba(0,0,0,0.04);
+    background: rgba(0,0,0,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  footer a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer a:hover { color: var(--accent-purple); }
+
+  /* ============================================================
+     SCROLLBAR
+     ============================================================ */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.06);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
+
+  /* ============================================================
+     TOAST
+     ============================================================ */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0,0,0,0.08);
+    color: var(--text-primary);
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-size: 13px;
+    opacity: 0;
+    transition: all 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    z-index: 999;
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 30px; }
+    .hero p { font-size: 15px; }
+    .tools-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    .header-nav a { font-size: 12px; padding: 5px 10px; }
+    .header-nav a:nth-child(3),
+    .header-nav a:nth-child(4),
+    .header-nav a:nth-child(5) { display: none; }
+    .tool-workspace { padding: 1rem; }
+    .workspace-title { font-size: 18px; }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 26px; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .header-nav { gap: 2px; }
+    .logo-badge { display: none; }
+    .hero-stats { gap: 24px; }
+    .stat-num { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="bg-aurora"></div>
+<div class="bg-grid"></div>
+<div class="bg-particles"></div>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <div class="logo" onclick="showHome()">
+      <div class="logo-icon">✦</div>
+      <span class="logo-name">奇笔AI 2.0</span>
+      <span class="logo-badge">AI Powered</span>
+    </div>
+    <nav class="header-nav">
+      <a class="active" onclick="showHome()">工具首页</a>
+      <a onclick="showTool('story')">小说创作</a>
+      <a onclick="showTool('copywriting')">文案生成</a>
+      <a onclick="showTool('email')">邮件撰写</a>
+      <a onclick="showTool('social')">社媒内容</a>
+      <a onclick="showTool('children')">儿童读物</a>
+      <a onclick="showTool('biography')">人物自传</a>
+      <span id="apikey-badge" style="background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:#00E5A0;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;">✓ AI 已启用</span>
+    </nav>
+  </div>
+</header>
+
+<!-- Home Section -->
+<div id="home-section">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-tag">✦ 新一代 AI 创作引擎</div>
+    <h1>奇笔AI 2.0<br>智能创作，即刻开始</h1>
+    <p>从小说到文案，从邮件到社媒，<br>9 大创作工具 · AI 实时生成 · 自由掌控字数</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">9+</div><div class="stat-label">创作工具</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat"><div class="stat-num">AI</div><div class="stat-label">实时驱动</div></div>
+      <div class="stat-sep"></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">无限创作</div></div>
+    </div>
+  </div>
+
+  <!-- Tool Cards -->
+  <div class="tools-section">
+    <div class="section-title">热门工具</div>
+    <div class="tools-grid">
+
+      <div class="tool-card" onclick="showTool('story')">
+        <div class="card-icon" style="background:rgba(139,92,246,0.12);">📖</div>
+        <div class="card-title">AI 小说创作</div>
+        <div class="card-desc">根据题材、人物、情节等多维度设定，一键生成精彩小说内容，支持多种类型风格</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(139,92,246,0.12);color:#A78BFA;">小说</span>
+          <span class="card-tag" style="background:rgba(236,72,153,0.12);color:#F472B6;">创意写作</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('copywriting')">
+        <div class="card-icon" style="background:rgba(0,229,160,0.12);">✍️</div>
+        <div class="card-title">营销文案生成</div>
+        <div class="card-desc">输入产品特点和目标人群，AI 生成吸引眼球的营销文案，覆盖电商、品牌、促销等场景</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(0,229,160,0.12);color:#34D399;">营销</span>
+          <span class="card-tag" style="background:rgba(245,158,11,0.12);color:#FBBF24;">电商文案</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('email')">
+        <div class="card-icon" style="background:rgba(59,130,246,0.12);">📧</div>
+        <div class="card-title">职场邮件助手</div>
+        <div class="card-desc">设定邮件场景、语气和要点，AI 帮你写出专业、得体的职场邮件，覆盖各类商务场景</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(59,130,246,0.12);color:#60A5FA;">职场</span>
+          <span class="card-tag" style="background:rgba(139,92,246,0.12);color:#A78BFA;">沟通</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('social')">
+        <div class="card-icon" style="background:rgba(245,158,11,0.12);">📱</div>
+        <div class="card-title">社媒内容创作</div>
+        <div class="card-desc">为微博、小红书、抖音等平台生成高互动率的内容，包含话题标签和互动引导</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(245,158,11,0.12);color:#FBBF24;">小红书</span>
+          <span class="card-tag" style="background:rgba(249,115,22,0.12);color:#FB923C;">微博</span>
+          <span class="card-tag" style="background:rgba(236,72,153,0.12);color:#F472B6;">抖音</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('poem')">
+        <div class="card-icon" style="background:rgba(236,72,153,0.12);">🌸</div>
+        <div class="card-title">诗歌创作</div>
+        <div class="card-desc">选择诗歌体裁、意象和情感基调，AI 为你创作唯美诗歌，古诗词、现代诗、散文诗均可</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(236,72,153,0.12);color:#F472B6;">诗歌</span>
+          <span class="card-tag" style="background:rgba(139,92,246,0.12);color:#A78BFA;">古诗词</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('resume')">
+        <div class="card-icon" style="background:rgba(249,115,22,0.12);">💼</div>
+        <div class="card-title">简历优化助手</div>
+        <div class="card-desc">输入工作经历和求职意向，AI 帮你优化简历描述，突出核心竞争力，提升求职成功率</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(249,115,22,0.12);color:#FB923C;">简历</span>
+          <span class="card-tag" style="background:rgba(0,229,160,0.12);color:#34D399;">求职</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('children')">
+        <div class="card-icon" style="background:rgba(0,212,255,0.12);">🧒</div>
+        <div class="card-title">儿童读物创作</div>
+        <div class="card-desc">根据年龄、类型和教育主题，AI 生成适合儿童的生动故事，支持童话、寓言、科普等多种类型</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(0,212,255,0.12);color:#22D3EE;">儿童</span>
+          <span class="card-tag" style="background:rgba(139,92,246,0.12);color:#A78BFA;">教育</span>
+          <span class="card-tag" style="background:rgba(236,72,153,0.12);color:#F472B6;">故事</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('biography')">
+        <div class="card-icon" style="background:rgba(245,158,11,0.12);">📜</div>
+        <div class="card-title">人物自传撰写</div>
+        <div class="card-desc">输入人生经历和关键事件，AI 帮你撰写结构完整、情感真挚的人物自传或传记文学</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(245,158,11,0.12);color:#FBBF24;">传记</span>
+          <span class="card-tag" style="background:rgba(249,115,22,0.12);color:#FB923C;">人物</span>
+          <span class="card-tag" style="background:rgba(59,130,246,0.12);color:#60A5FA;">叙事</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="section-title">效率工具</div>
+    <div class="tools-grid">
+
+      <div class="tool-card" onclick="showTool('summary')">
+        <div class="card-icon" style="background:rgba(132,204,22,0.12);">📝</div>
+        <div class="card-title">文章摘要提取</div>
+        <div class="card-desc">粘贴长文章，AI 自动提炼核心观点，生成结构清晰的摘要，快速掌握文章精华</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(132,204,22,0.12);color:#A3E635;">摘要</span>
+          <span class="card-tag" style="background:rgba(59,130,246,0.12);color:#60A5FA;">效率</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('translate')">
+        <div class="card-icon" style="background:rgba(59,130,246,0.12);">🌐</div>
+        <div class="card-title">智能翻译润色</div>
+        <div class="card-desc">不只是翻译，AI 在翻译的同时进行语言润色，让译文更自然地道，适合各种正式场合</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(59,130,246,0.12);color:#60A5FA;">翻译</span>
+          <span class="card-tag" style="background:rgba(139,92,246,0.12);color:#A78BFA;">润色</span>
+        </div>
+      </div>
+
+      <div class="tool-card" onclick="showTool('title')">
+        <div class="card-icon" style="background:rgba(245,158,11,0.12);">✨</div>
+        <div class="card-title">爆款标题生成</div>
+        <div class="card-desc">输入文章主题，AI 一次生成多个高点击率标题方案，适配不同平台的传播风格</div>
+        <div class="card-tags">
+          <span class="card-tag" style="background:rgba(245,158,11,0.12);color:#FBBF24;">标题党</span>
+          <span class="card-tag" style="background:rgba(249,115,22,0.12);color:#FB923C;">爆款</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Tool Workspace Section -->
+<div id="workspace-section" class="tool-workspace">
+  <!-- Dynamic content filled by JS -->
+</div>
+
+<!-- Output Area (shared) -->
+<div id="output-area" class="output-area" style="max-width:900px;margin:0 auto 4rem;padding:0 2rem;display:none;">
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- Footer -->
+<footer>
+  <p style="color:var(--text-secondary);">✦ 奇笔AI 2.0 · 让每个人都能轻松创作</p>
+  <p style="margin-top:8px;font-size:12px;">内容由 AI 生成，仅供参考 · <a href="#">使用条款</a> · <a href="#">隐私政策</a></p>
+</footer>
+
+<script>
+// ==================== Data ====================
+const TOOLS = {
+  story: {
+    name: 'AI 小说创作',
+    icon: '📖',
+    color: '#EEEDFE',
+    accent: '#534AB7',
+    sections: [
+      {
+        id: 'length', label: '创作长度', required: true, multiple: false,
+        options: ['短篇（约800字）', '中篇（约1500字）']
+      },
+      {
+        id: 'audience', label: '受众定位', required: true, multiple: false,
+        options: ['男频', '女频', '通用']
+      },
+      {
+        id: 'genre', label: '题材类型', required: true, multiple: false,
+        options: ['世情', '言情', '悬疑', '脑洞', '惊悚', '科幻', '玄幻', '武侠', '都市', '历史', '军事', '商战']
+      },
+      {
+        id: 'characters', label: '人物设定', required: false, multiple: true, hint: '可多选',
+        options: ['病娇', '黑莲花', '假名媛', '霸道总裁', '腹黑男主', '温柔女主', '高冷学霸', '青梅竹马', '天才少女', '神秘大佬', '傲娇公主', '反派大Boss']
+      },
+      {
+        id: 'plot', label: '情节设定', required: false, multiple: true, hint: '可多选',
+        options: ['重生复仇', '先婚后爱', '契约恋人', '身份互换', '穿越时空', '失忆梗', '双重身份', '豪门恩怨', '暗恋成真', '敌人变恋人', '误会重重', '救赎与成长']
+      },
+      {
+        id: 'mood', label: '情绪风格', required: false, multiple: true, hint: '可多选',
+        options: ['爽文', '虐恋', '智商在线', '甜宠', '治愈', '燃血', '搞笑', '温馨', '紧张刺激', '感人肺腑', '反转不断', '细腻情感']
+      },
+      {
+        id: 'setting', label: '时空背景', required: true, multiple: false,
+        options: ['古代', '现代', '近现代', '未来', '架空', '民国', '异世界', '平行宇宙']
+      }
+    ],
+    textPlaceholder: '补充说明（可选）：描述你的特殊想法、特定场景或人物关系...',
+    generateLabel: '开始创作故事',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'创作长度',audience:'受众',genre:'题材',characters:'人物',plot:'情节',mood:'风格',setting:'背景'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请根据以下设定，创作一段精彩的小说内容：\n${parts.join('\n')}${text ? '\n额外要求：'+text : ''}\n\n要求：严格遵循"创作长度"中的字数范围，情节生动，人物鲜明，有代入感，结尾留有悬念。`;
+    }
+  },
+  copywriting: {
+    name: '营销文案生成',
+    icon: '✍️',
+    color: '#E1F5EE',
+    accent: '#0F6E56',
+    sections: [
+      {
+        id: 'length', label: '文案长度', required: true, multiple: false,
+        options: ['短文案（约300字）', '中篇文案（约600字）']
+      },
+      {
+        id: 'platform', label: '投放平台', required: true, multiple: false,
+        options: ['淘宝/天猫', '京东', '小红书', '抖音', '微信公众号', '微博', '朋友圈', '线下海报']
+      },
+      {
+        id: 'type', label: '文案类型', required: true, multiple: false,
+        options: ['产品详情', '促销活动', '品牌故事', '用户评价', '种草内容', '开业宣传', '节日营销', '直播带货']
+      },
+      {
+        id: 'tone', label: '文案语气', required: true, multiple: false,
+        options: ['专业权威', '亲切温暖', '活泼幽默', '高端奢华', '性价比强调', '情感共鸣', '紧迫感强']
+      },
+      {
+        id: 'target', label: '目标人群', required: false, multiple: true, hint: '可多选',
+        options: ['年轻女性', '年轻男性', '宝妈群体', '职场白领', '学生党', '中老年人', '高端消费者', '追求性价比']
+      }
+    ],
+    textPlaceholder: '产品/活动描述（必填）：输入产品名称、核心卖点、价格区间等关键信息...',
+    generateLabel: '生成营销文案',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'文案长度',platform:'平台',type:'类型',tone:'语气',target:'目标人群'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请为以下产品/活动生成营销文案：\n${parts.join('\n')}\n产品信息：${text || '（用户未填写，请生成通用示例）'}\n\n要求：严格按照"文案长度"控制字数，突出卖点，有吸引力，符合平台调性，包含行动号召语。`;
+    }
+  },
+  email: {
+    name: '职场邮件助手',
+    icon: '📧',
+    color: '#E6F1FB',
+    accent: '#185FA5',
+    sections: [
+      {
+        id: 'length', label: '邮件长度', required: true, multiple: false,
+        options: ['简洁版（约200字）', '标准版（约400字）', '详细版（约800字）']
+      },
+      {
+        id: 'scene', label: '邮件场景', required: true, multiple: false,
+        options: ['项目汇报', '会议邀请', '工作请假', '客户跟进', '合作提案', '问题反馈', '感谢致谢', '薪资谈判', '入职报到', '离职交接']
+      },
+      {
+        id: 'tone', label: '沟通语气', required: true, multiple: false,
+        options: ['正式专业', '友好温和', '简洁直接', '诚恳谦逊', '热情积极']
+      },
+      {
+        id: 'relation', label: '收件人关系', required: true, multiple: false,
+        options: ['直属上司', '平级同事', '下属员工', '重要客户', '合作伙伴', '人力资源', '高层领导']
+      },
+      {
+        id: 'lang', label: '语言版本', required: false, multiple: false,
+        options: ['中文', '英文', '中英双语']
+      }
+    ],
+    textPlaceholder: '邮件要点（必填）：描述这封邮件需要传达的核心内容、关键信息或特殊要求...',
+    generateLabel: '生成邮件内容',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'邮件长度',scene:'场景',tone:'语气',relation:'收件人',lang:'语言'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请撰写一封职场邮件，包含邮件主题和正文：\n${parts.join('\n')}\n邮件要点：${text || '（请生成示例邮件）'}\n\n要求：严格按照"邮件长度"控制字数，格式规范，逻辑清晰，语言得体，包含问候语和结束语。`;
+    }
+  },
+  social: {
+    name: '社媒内容创作',
+    icon: '📱',
+    color: '#FAEEDA',
+    accent: '#854F0B',
+    sections: [
+      {
+        id: 'length', label: '内容长度', required: true, multiple: false,
+        options: ['短内容（约200字）', '中篇内容（约500字）']
+      },
+      {
+        id: 'platform', label: '目标平台', required: true, multiple: false,
+        options: ['小红书', '微博', '抖音文案', '微信朋友圈', 'B站简介', '知乎回答', 'LinkedIn']
+      },
+      {
+        id: 'content_type', label: '内容类型', required: true, multiple: false,
+        options: ['好物分享', '生活记录', '旅行打卡', '美食探店', '穿搭分享', '知识干货', '情感故事', '健身打卡', '读书笔记']
+      },
+      {
+        id: 'style', label: '内容风格', required: true, multiple: false,
+        options: ['清新治愈', '幽默搞笑', '专业干货', '感性文艺', '活泼可爱', '高端大气', '接地气']
+      },
+      {
+        id: 'elements', label: '包含元素', required: false, multiple: true, hint: '可多选',
+        options: ['热门话题标签', '互动提问', '表情包文字', '数字列表', '金句收尾', '福利预告', '评论引导']
+      }
+    ],
+    textPlaceholder: '内容主题（必填）：描述你想分享的内容主题、核心想法或具体场景...',
+    generateLabel: '生成社媒内容',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'内容长度',platform:'平台',content_type:'内容类型',style:'风格',elements:'包含元素'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请为以下内容生成适合社交媒体发布的帖子：\n${parts.join('\n')}\n内容主题：${text || '（请生成示例内容）'}\n\n要求：严格按照"内容长度"控制字数，符合平台调性，自然流畅，有传播力，包含适当的话题标签。`;
+    }
+  },
+  poem: {
+    name: '诗歌创作',
+    icon: '🌸',
+    color: '#FBEAF0',
+    accent: '#993556',
+    sections: [
+      {
+        id: 'length', label: '诗作长度', required: true, multiple: false,
+        options: ['短诗（绝句类）', '中篇诗作（律诗类）']
+      },
+      {
+        id: 'type', label: '诗歌体裁', required: true, multiple: false,
+        options: ['五言绝句', '七言绝句', '五言律诗', '七言律诗', '词牌（水调歌头）', '词牌（念奴娇）', '现代诗', '散文诗']
+      },
+      {
+        id: 'theme', label: '主题意象', required: true, multiple: false,
+        options: ['山河自然', '相思离别', '报国壮志', '隐逸闲适', '咏物抒怀', '节日庆典', '四季变换', '爱情浪漫']
+      },
+      {
+        id: 'emotion', label: '情感基调', required: true, multiple: false,
+        options: ['豪迈激昂', '婉约细腻', '清新淡雅', '忧郁深沉', '欢快明朗', '思念缠绵', '禅意平静']
+      },
+      {
+        id: 'imagery', label: '意象元素', required: false, multiple: true, hint: '可多选',
+        options: ['明月', '流水', '山川', '落花', '孤雁', '烟雨', '竹林', '梅花', '夕阳', '星辰', '红叶', '碧海']
+      }
+    ],
+    textPlaceholder: '创作灵感（可选）：描述你想表达的情境、心情或特定的场景想象...',
+    generateLabel: '创作诗歌',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'诗作长度',type:'体裁',theme:'主题',emotion:'情感',imagery:'意象'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请根据以下要求创作诗歌：\n${parts.join('\n')}${text ? '\n创作灵感：'+text : ''}\n\n要求：严格按照"诗作长度"控制篇幅，意境深远，文字优美，符合所选体裁的格律要求，并附上简短赏析。`;
+    }
+  },
+  resume: {
+    name: '简历优化助手',
+    icon: '💼',
+    color: '#FAECE7',
+    accent: '#993C1D',
+    sections: [
+      {
+        id: 'length', label: '简历长度', required: true, multiple: false,
+        options: ['精简版（一页）', '标准版（两页）', '详细版（三页及以上）']
+      },
+      {
+        id: 'position', label: '目标岗位', required: true, multiple: false,
+        options: ['产品经理', '前端开发', '后端开发', '算法工程师', '数据分析', '运营专员', '市场营销', '设计师', '项目管理', '销售经理', '财务会计', '人力资源']
+      },
+      {
+        id: 'level', label: '求职层级', required: true, multiple: false,
+        options: ['应届生', '1-3年经验', '3-5年经验', '5年以上', '管理岗位', '高级专家']
+      },
+      {
+        id: 'optimize', label: '优化重点', required: false, multiple: true, hint: '可多选',
+        options: ['量化成果数据', '突出技术能力', '强调管理经验', '优化语言表达', '匹配岗位需求', '精简冗余内容', '加强逻辑结构']
+      },
+      {
+        id: 'company', label: '目标公司类型', required: false, multiple: false,
+        options: ['互联网大厂', '创业公司', '国有企业', '外资企业', '上市公司', '不限']
+      }
+    ],
+    textPlaceholder: '简历内容（必填）：粘贴你需要优化的工作经历、项目经验或个人总结...',
+    generateLabel: '开始优化简历',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'简历长度',position:'目标岗位',level:'层级',optimize:'优化重点',company:'目标公司'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请帮我优化以下简历内容：\n${parts.join('\n')}\n原始内容：${text || '（请提供需要优化的简历内容）'}\n\n要求：严格按照"简历长度"控制篇幅，使用STAR法则，量化数据成果，专业用词，突出核心竞争力，格式规范。`;
+    }
+  },
+  summary: {
+    name: '文章摘要提取',
+    icon: '📝',
+    color: '#EAF3DE',
+    accent: '#3B6D11',
+    sections: [
+      {
+        id: 'length', label: '摘要长度', required: true, multiple: false,
+        options: ['短摘要（约100字）', '中摘要（约200字）', '长摘要（约400字）']
+      },
+      {
+        id: 'format', label: '输出格式', required: true, multiple: false,
+        options: ['纯文字段落', '要点列表', '结构化提纲', '思维导图文字版']
+      },
+      {
+        id: 'focus', label: '提炼重点', required: false, multiple: true, hint: '可多选',
+        options: ['核心论点', '关键数据', '行动建议', '创新观点', '背景信息', '结论洞察']
+      }
+    ],
+    textPlaceholder: '粘贴文章内容（必填）：将需要提炼摘要的长文章粘贴到这里...',
+    generateLabel: '提取摘要',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'摘要长度',format:'格式',focus:'重点'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请对以下文章进行摘要提炼：\n${parts.join('\n')}\n文章内容：${text || '（请粘贴文章内容）'}\n\n要求：严格按照"摘要长度"控制字数，准确提炼核心内容，不添加原文没有的信息，语言简洁清晰。`;
+    }
+  },
+  translate: {
+    name: '智能翻译润色',
+    icon: '🌐',
+    color: '#E6F1FB',
+    accent: '#185FA5',
+    sections: [
+      {
+        id: 'length', label: '翻译篇幅', required: true, multiple: false,
+        options: ['保持原意（简练）', '适度扩展（中等）', '充分润色（详细）']
+      },
+      {
+        id: 'direction', label: '翻译方向', required: true, multiple: false,
+        options: ['中文 → 英文', '英文 → 中文', '中文 → 日文', '中文 → 韩文', '中文 → 法文', '中文 → 德文']
+      },
+      {
+        id: 'style', label: '翻译风格', required: true, multiple: false,
+        options: ['正式商务', '学术论文', '日常口语', '文学文艺', '新闻媒体', '技术文档']
+      },
+      {
+        id: 'polish', label: '润色要求', required: false, multiple: true, hint: '可多选',
+        options: ['地道表达优化', '文化差异调整', '语气一致性', '专业术语规范', '简洁性优化', '感情色彩保留']
+      }
+    ],
+    textPlaceholder: '待翻译内容（必填）：粘贴需要翻译和润色的文字...',
+    generateLabel: '翻译并润色',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'翻译篇幅',direction:'翻译方向',style:'风格',polish:'润色要求'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请翻译并润色以下内容：\n${parts.join('\n')}\n原文：${text || '（请提供需要翻译的内容）'}\n\n要求：严格按照"翻译篇幅"控制输出量，翻译准确，表达地道，符合目标语言的语言习惯，保留原文语气和风格。`;
+    }
+  },
+  title: {
+    name: '爆款标题生成',
+    icon: '✨',
+    color: '#FAEEDA',
+    accent: '#854F0B',
+    sections: [
+      {
+        id: 'length', label: '生成篇幅', required: true, multiple: false,
+        options: ['短篇（5个标题）', '中篇（10个标题）']
+      },
+      {
+        id: 'platform', label: '目标平台', required: true, multiple: false,
+        options: ['微信公众号', '小红书', '今日头条', '知乎', '百度搜索', '抖音封面', '微博热搜']
+      },
+      {
+        id: 'type', label: '标题类型', required: true, multiple: true, hint: '可多选',
+        options: ['数字列表型', '问句悬念型', '对比冲突型', '情感共鸣型', '干货价值型', '热点借势型', '故事叙述型']
+      },
+      {
+        id: 'titleLength', label: '标题字数', required: false, multiple: false,
+        options: ['15字以内', '15-25字', '25-35字', '不限制']
+      }
+    ],
+    textPlaceholder: '文章主题（必填）：描述文章的核心主题、主要观点或目标读者...',
+    generateLabel: '生成爆款标题',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {platform:'平台',type:'类型',length:'篇幅',titleLength:'标题字数'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请根据以下要求生成爆款标题：\n${parts.join('\n')}\n主题：${text || '（请描述文章主题）'}\n\n要求：吸引眼球，有点击欲望，符合平台调性，每个标题独立成行并标注序号。`;
+    }
+  },
+  children: {
+    name: '儿童读物创作',
+    icon: '🧒',
+    color: '#E0F4FF',
+    accent: '#0077B6',
+    sections: [
+      {
+        id: 'length', label: '故事长度', required: true, multiple: false,
+        options: ['短篇（约500字）', '中篇（约1200字）']
+      },
+      {
+        id: 'age', label: '适读年龄', required: true, multiple: false,
+        options: ['3-6岁（幼儿）', '6-9岁（低年级）', '9-12岁（高年级）']
+      },
+      {
+        id: 'type', label: '故事类型', required: true, multiple: false,
+        options: ['童话故事', '寓言故事', '科普故事', '冒险故事', '成长故事', '睡前故事', '奇幻故事']
+      },
+      {
+        id: 'character', label: '角色类型', required: false, multiple: true, hint: '可多选',
+        options: ['可爱动物', '勇敢小孩', '智慧老人', '魔法精灵', '恐龙伙伴', '机器人朋友', '会说话的植物']
+      },
+      {
+        id: 'theme', label: '教育主题', required: false, multiple: true, hint: '可多选',
+        options: ['勇敢坚强', '诚实守信', '友爱分享', '保护环境', '想象力', '自理能力', '情绪管理', '感恩的心', '团队合作']
+      },
+      {
+        id: 'style', label: '语言风格', required: true, multiple: false,
+        options: ['简单易懂', '朗朗上口', '互动问答', '拟人化', '幽默风趣']
+      }
+    ],
+    textPlaceholder: '故事背景或特殊要求（可选）：描述你想要的特定角色、场景或故事主题...',
+    generateLabel: '开始创作故事',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'故事长度',age:'适读年龄',type:'故事类型',character:'角色',theme:'教育主题',style:'语言风格'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请根据以下设定，创作一篇适合儿童的精彩故事：\n${parts.join('\n')}${text ? '\n故事背景：'+text : ''}\n\n要求：严格遵循"故事长度"中的字数范围，语言生动有趣，情节简单明了，富有想象力和教育意义，适合指定年龄段儿童阅读。`;
+    }
+  },
+  biography: {
+    name: '人物自传撰写',
+    icon: '📜',
+    color: '#FEF3C7',
+    accent: '#92400E',
+    sections: [
+      {
+        id: 'length', label: '传记篇幅', required: true, multiple: false,
+        options: ['短篇（约1000字）', '中篇（约2500字）']
+      },
+      {
+        id: 'type', label: '自传类型', required: true, multiple: false,
+        options: ['个人成长史', '创业历程', '职业生涯', '学术之路', '艺术人生', '家族传记', '口述历史']
+      },
+      {
+        id: 'period', label: '时间跨度', required: true, multiple: false,
+        options: ['童年时期', '青少年时期', '成年奋斗', '中老年回顾', '一生全览']
+      },
+      {
+        id: 'perspective', label: '叙事视角', required: true, multiple: false,
+        options: ['第一人称（我）', '第三人称（他/她）']
+      },
+      {
+        id: 'tone', label: '风格基调', required: false, multiple: true, hint: '可多选',
+        options: ['励志向上', '温情感人', '轻松幽默', '深沉思考', '朴实真挚', '跌宕起伏']
+      },
+      {
+        id: 'focus', label: '重点突出', required: false, multiple: true, hint: '可多选',
+        options: ['关键转折点', '成就里程碑', '失败与教训', '人生感悟', '社会贡献', '家庭故事', '时代背景']
+      }
+    ],
+    textPlaceholder: '人物简介（必填）：描述人物的基本情况、主要经历、关键事件或想要突出的故事...',
+    generateLabel: '开始撰写自传',
+    promptTemplate: (selections, text) => {
+      const parts = Object.entries(selections).map(([k,v]) => {
+        const labels = {length:'传记篇幅',type:'自传类型',period:'时间跨度',perspective:'叙事视角',tone:'风格基调',focus:'重点突出'};
+        return `${labels[k]||k}：${Array.isArray(v) ? v.join('、') : v}`;
+      });
+      return `请根据以下设定，撰写一篇人物自传：\n${parts.join('\n')}\n人物信息：${text || '（请提供人物基本信息）'}\n\n要求：严格遵循"传记篇幅"中的字数范围，叙事结构完整，情感真挚，突出人物性格和关键经历，具有文学性和可读性。`;
+    }
+  }
+};
+
+// ==================== State ====================
+let currentTool = null;
+let currentSelections = {};
+let isGenerating = false;
+
+// ==================== Navigation ====================
+function showHome() {
+  document.getElementById('home-section').style.display = 'block';
+  document.getElementById('workspace-section').classList.remove('visible');
+  document.getElementById('workspace-section').style.display = 'none';
+  const outputEl = document.getElementById('output-area');
+  outputEl.classList.remove('visible');
+  outputEl.style.display = 'none';
+  currentTool = null;
+  currentSelections = {};
+}
+
+function showTool(toolId) {
+  currentTool = toolId;
+  currentSelections = {};
+  const tool = TOOLS[toolId];
+  if (!tool) return;
+
+  document.getElementById('home-section').style.display = 'none';
+  const ws = document.getElementById('workspace-section');
+  ws.style.display = 'block';
+  ws.classList.add('visible');
+
+  // Clear output
+  const outputEl = document.getElementById('output-area');
+  outputEl.classList.remove('visible');
+  outputEl.style.display = 'none';
+
+  // Build workspace
+  let html = `
+    <div class="workspace-header">
+      <div class="workspace-back" onclick="showHome()">←</div>
+      <div style="font-size:22px;margin-right:4px;">${tool.icon}</div>
+      <div class="workspace-title">${tool.name}</div>
+    </div>
+  `;
+
+  // Form sections
+  tool.sections.forEach(section => {
+    html += `
+      <div class="form-section">
+        <div class="form-label">
+          ${section.label}
+          ${section.required ? '<span class="required">必选</span>' : ''}
+          ${section.hint ? '<span class="hint">· '+section.hint+'</span>' : ''}
+        </div>
+        <div class="tag-group" id="group-${section.id}">
+    `;
+    section.options.forEach(opt => {
+      html += `<button class="tag-btn" data-group="${section.id}" data-value="${opt}" data-multiple="${section.multiple}" onclick="toggleTag(this)">${opt}</button>`;
+    });
+    html += `</div></div>`;
+  });
+
+  // Textarea
+  html += `
+    <div class="form-section">
+      <div class="form-label">补充说明</div>
+      <textarea id="extra-input" rows="4" placeholder="${tool.textPlaceholder}"></textarea>
+    </div>
+    <button class="generate-btn" id="gen-btn" onclick="generate()">
+      <span class="btn-icon">✦</span> ${tool.generateLabel}
+    </button>
+  `;
+
+  ws.innerHTML = html;
+}
+
+// ==================== Tag Toggle ====================
+function toggleTag(el) {
+  const group = el.dataset.group;
+  const value = el.dataset.value;
+  const multiple = el.dataset.multiple === 'true';
+
+  if (!multiple) {
+    // Single select: deselect others in group
+    document.querySelectorAll(`[data-group="${group}"]`).forEach(btn => {
+      btn.classList.remove('selected');
+    });
+    el.classList.add('selected');
+    currentSelections[group] = value;
+  } else {
+    // Multi select
+    if (el.classList.contains('selected')) {
+      el.classList.remove('selected');
+      if (Array.isArray(currentSelections[group])) {
+        currentSelections[group] = currentSelections[group].filter(v => v !== value);
+        if (currentSelections[group].length === 0) delete currentSelections[group];
+      }
+    } else {
+      el.classList.add('selected');
+      if (!currentSelections[group]) currentSelections[group] = [];
+      currentSelections[group].push(value);
+    }
+  }
+}
+
+// ==================== API Key Manager ====================
+function getApiKey() {
+  return 'ark-fb3796fa-fb13-487d-9007-58b346801a32-2f6a8';
+}
+function setApiKey(key) {
+  localStorage.setItem('qibi_api_key', key.trim());
+}
+function hasApiKey() {
+  return true;
+}
+function showApiKeyModal() {
+  const modal = document.createElement('div');
+  modal.id = 'apikey-modal';
+  modal.innerHTML = `
+    <div style="position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(5,5,13,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);">
+      <div style="background:rgba(255,255,255,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(0,0,0,0.07);border-radius:24px;padding:36px 32px;max-width:440px;width:90%;box-shadow:0 24px 80px rgba(0,0,0,0.12),0 0 40px rgba(0,212,255,0.05);animation:modalIn 0.35s ease-out;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#00D4FF,#8B5CF6);display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">🔐</div>
+          <div>
+            <h3 style="font-size:18px;font-weight:700;color:#1A1A2E;margin:0;">设置 AI API Key</h3>
+            <p style="font-size:12px;color:#6B6B80;margin:4px 0 0;">所有数据仅保存在本地浏览器中</p>
+          </div>
+        </div>
+        <p style="font-size:13px;color:#6B6B80;line-height:1.7;margin-bottom:16px;">
+          奇笔AI 需要 API Key 才能生成真实内容。您可以在
+          <a href="https://console.volcengine.com/ark" target="_blank" style="color:#00D4FF;font-weight:600;">火山引擎 Ark 平台</a>
+          获取。
+        </p>
+        <input id="apikey-input" type="password" placeholder="ark-xxxxxxxxxxxxxxxxxxxxxxxx" value="${getApiKey()}"
+          style="width:100%;padding:14px 18px;border:1px solid rgba(0,0,0,0.10);border-radius:14px;font-size:14px;color:#1A1A2E;background:rgba(0,0,0,0.06);outline:none;transition:all 0.25s;box-sizing:border-box;margin-bottom:20px;"
+          onfocus="this.style.borderColor='rgba(0,212,255,0.4)';this.style.boxShadow='0 0 0 3px rgba(0,212,255,0.04)';"
+          onblur="this.style.borderColor='rgba(0,0,0,0.10)';this.style.boxShadow='none';"
+        />
+        <div style="display:flex;gap:10px;">
+          <button onclick="saveApiKeyFromModal()" style="flex:1;padding:14px 0;border:none;border-radius:14px;background:linear-gradient(135deg,#00D4FF,#8B5CF6);color:white;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(0,212,255,0.2);">保存并启用</button>
+          <button onclick="closeApiKeyModal()" style="padding:14px 24px;border:1px solid rgba(0,0,0,0.07);border-radius:14px;background:rgba(0,0,0,0.04);color:#6B6B80;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;">取消</button>
+        </div>
+        <div style="margin-top:16px;padding:12px 16px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.12);border-radius:12px;font-size:12px;color:#00D4FF;line-height:1.6;">
+          <b>💡 小贴士：</b>没有 API Key 也可以浏览工具，但会使用本地示例内容。您随时可以点击右上角的设置按钮重新配置。
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  setTimeout(() => document.getElementById('apikey-input').focus(), 100);
+}
+function closeApiKeyModal() {
+  const modal = document.getElementById('apikey-modal');
+  if (modal) modal.remove();
+}
+function saveApiKeyFromModal() {
+  const input = document.getElementById('apikey-input');
+  if (!input) return;
+  const key = input.value.trim();
+  if (!key) {
+    showToast('请输入有效的 API Key');
+    return;
+  }
+  if (!key.startsWith('ark-')) {
+    showToast('API Key 格式不正确，应以 ark- 开头');
+    return;
+  }
+  setApiKey(key);
+  closeApiKeyModal();
+  showToast('✅ API Key 已保存，现在可以使用 AI 实时生成！');
+  updateApiKeyBadge();
+}
+function updateApiKeyBadge() {
+  const badge = document.getElementById('apikey-badge');
+  if (!badge) return;
+  badge.innerHTML = '✓ AI 已启用';
+  badge.style.cssText = 'background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.25);color:#00E5A0;font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:0.3px;';
+}
+
+// ==================== AI API Configuration ====================
+const AI_CONFIG = {
+  endpoint: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+  model: 'doubao-1-5-pro-32k-250115',
+  timeout: 60000,
+  maxRetries: 1
+};
+
+// ==================== System Prompts per Tool ====================
+function buildSystemPrompt(toolId, selections) {
+  const base = '你是一个专业的 AI 创作助手，名为"奇笔 AI 2.0"。你需要根据用户的详细设定，高质量地完成创作任务。请直接输出创作内容，不要加前缀说明。';
+  
+  // Extract word count guidance from length selection
+  const lengthChoice = selections.length || '';
+  const wordGuide = lengthChoice ? `【重要】用户选择了"${lengthChoice}"，请严格将输出控制在该篇幅范围内，不要显著超出或不足。` : '';
+  
+  const specifics = {
+    story: `你是一位经验丰富的网文作家，擅长各种题材的小说创作。请根据用户设定的受众、题材、人物、情节、情绪风格和时空背景，创作一段生动精彩的小说内容。${wordGuide}注意：情节要有冲突和张力，人物要立体鲜明，结尾要留有悬念或余韵。`,
+    copywriting: `你是一位资深营销文案专家，熟悉各大电商和社媒平台的文案风格。请根据用户设定的平台、类型、语气和目标人群，创作具有高转化率的营销文案。${wordGuide}注意：突出卖点，语言有感染力，包含明确的行动号召。`,
+    email: `你是一位专业的商务沟通专家，擅长撰写各类职场邮件。请根据用户设定的场景、语气、收件人关系，撰写格式规范、语言得体的邮件。${wordGuide}注意：包含邮件主题、恰当的称呼和结束语。`,
+    social: `你是一位社交媒体运营专家，熟悉小红书、微博、抖音等平台的内容风格。请根据用户设定的平台、内容类型和风格，创作有传播力的社媒内容。${wordGuide}注意：符合平台调性，语言自然口语化，包含适当的话题标签和互动引导。`,
+    poem: `你是一位才华横溢的诗人，精通中国古典诗词和现代诗歌创作。请根据用户设定的体裁、主题、情感基调和意象元素，创作意境深远的诗歌。${wordGuide}如为古诗词请注意格律要求，并附简短赏析。`,
+    resume: `你是一位资深职业规划师和简历优化专家。请根据用户设定的目标岗位、求职层级和优化重点，使用STAR法则优化简历内容。${wordGuide}注意：量化成果数据，使用专业术语，突出核心竞争力。`,
+    summary: `你是一位专业的内容提炼师。请根据用户设定的摘要长度和输出格式，准确提炼文章核心内容。${wordGuide}注意：不添加原文没有的信息，语言简洁清晰，结构分明。`,
+    translate: `你是一位资深翻译专家。请根据用户设定的翻译方向和风格，提供准确、地道的翻译并润色。${wordGuide}注意：符合目标语言的语言习惯和表达方式，保留原文语气。`,
+    title: `你是一位爆款标题专家，深谙各平台的标题传播规律。请根据用户设定的平台、标题类型和字数要求，生成多个具有高点击率的标题方案。${wordGuide}注意：每个标题独立成行并标注序号，要有吸引力和传播力。`,
+    children: `你是一位资深的儿童文学作家，擅长为不同年龄段的儿童创作故事。你了解儿童心理发展特点，能用孩子喜欢的语言和节奏讲述故事。请根据用户设定的故事长度、适读年龄、故事类型、角色、教育主题和语言风格，创作一篇精彩的儿童读物。${wordGuide}注意：语言要适合指定年龄段，情节简单有趣，富有想象力和正面教育意义，角色形象鲜明可爱。`,
+    biography: `你是一位专业的人物传记作家，擅长以文学化的笔触记录真实人物的人生历程。你善于捕捉人物性格的闪光点和人生关键时刻，用恰当的叙事视角和风格基调呈现人物的精神世界。请根据用户设定的传记篇幅、自传类型、时间跨度、叙事视角、风格基调和重点突出方面，撰写一篇有深度的人物自传。${wordGuide}注意：叙事结构完整，情感真挚，突出人物性格和关键经历，具有文学性和可读性。`
+  };
+  return base + '\n\n' + (specifics[toolId] || specifics.story);
+}
+
+// ==================== Generate ====================
+async function generate() {
+  if (isGenerating) return;
+  const tool = TOOLS[currentTool];
+  if (!tool) return;
+
+  // Validate required
+  const missingRequired = tool.sections
+    .filter(s => s.required && !currentSelections[s.id])
+    .map(s => s.label);
+  if (missingRequired.length > 0) {
+    showToast('请选择：' + missingRequired.join('、'));
+    return;
+  }
+
+  const extraText = document.getElementById('extra-input').value.trim();
+  const prompt = tool.promptTemplate(currentSelections, extraText);
+  const systemPrompt = buildSystemPrompt(currentTool, currentSelections);
+  const startTime = Date.now();
+
+  isGenerating = true;
+  const genBtn = document.getElementById('gen-btn');
+  genBtn.disabled = true;
+  genBtn.innerHTML = `<span class="typing-indicator"><span></span><span></span><span></span></span> 正在连接 AI 服务...`;
+
+  // Show output area
+  const outputEl = document.getElementById('output-area');
+  outputEl.style.display = 'block';
+  outputEl.classList.add('visible');
+  outputEl.innerHTML = `
+    <div class="output-header">
+      <div class="output-header-left">
+        <div class="output-status loading" id="status-dot"></div>
+        <span id="status-text">正在连接 AI 服务...</span>
+      </div>
+      <div class="output-actions">
+        <button class="action-btn" onclick="copyOutput()">复制</button>
+        <button class="action-btn" onclick="clearOutput()">清空</button>
+      </div>
+    </div>
+    <div class="output-content" id="output-text"><span class="typing-indicator"><span></span><span></span><span></span></span></div>
+    <div class="meta-bar" id="meta-bar" style="display:none;"></div>
+  `;
+
+  outputEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // ---- Try real AI API first ----
+  let aiSuccess = false;
+  let aiError = null;
+
+  try {
+    document.getElementById('status-text').textContent = 'AI 正在为您创作...';
+    const aiResult = await callRealAI(systemPrompt, prompt);
+    
+    if (aiResult && aiResult.trim().length > 10) {
+      aiSuccess = true;
+    } else {
+      aiError = 'AI 返回内容过短';
+    }
+  } catch (err) {
+    console.warn('AI API 调用失败:', err.message);
+    aiError = err.message;
+  }
+
+  // ---- Fallback: use sample data ----
+  if (!aiSuccess) {
+    const outputTextEl = document.getElementById('output-text');
+    outputTextEl.innerHTML = '';
+    
+    // Insert error tip
+    if (aiError) {
+      const tipEl = document.createElement('div');
+      tipEl.id = 'api-status-tip';
+      tipEl.innerHTML = `⚠️ AI 服务暂不可用（${aiError.replace(/</g,'&lt;')}），以下为本地示例。`;
+      tipEl.style.cssText = 'background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#FBBF24;line-height:1.7;';
+      outputTextEl.parentNode.insertBefore(tipEl, outputTextEl);
+    }
+    
+    // Show sample content immediately (no typing delay for speed)
+    const sampleOutputs = getSampleOutput(currentTool, currentSelections, extraText);
+    outputTextEl.textContent = sampleOutputs;
+  }
+
+  // ---- Finalize ----
+  isGenerating = false;
+  genBtn.disabled = false;
+  genBtn.innerHTML = `<span class="btn-icon">✦</span> 重新生成`;
+
+  const statusDot = document.getElementById('status-dot');
+  if (statusDot) statusDot.classList.remove('loading');
+  const statusText = document.getElementById('status-text');
+  if (statusText) {
+    statusText.textContent = aiSuccess ? '✓ 创作完成 · AI' : '✓ 创作完成 · 本地示例';
+  }
+
+  const outputText = document.getElementById('output-text').textContent;
+  const charCount = outputText.length;
+  const wordCount = Math.ceil(charCount / 2);
+  const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+  const metaBar = document.getElementById('meta-bar');
+  if (metaBar) {
+    metaBar.style.display = 'flex';
+    metaBar.innerHTML = `<span>字符数：${charCount}</span><span>约 ${wordCount} 字</span><span>耗时：${elapsed}s</span><span>${aiSuccess ? '🤖 AI' : '📋 本地'}</span>`;
+  }
+}
+
+// ==================== Real AI API Call (SSE Streaming) ====================
+async function callRealAI(systemPrompt, userPrompt) {
+  const apiKey = getApiKey();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), AI_CONFIG.timeout);
+
+  // Try direct API first; fall back to local proxy if CORS blocks
+  const attemptFetch = async (endpoint, headers) => {
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        model: AI_CONFIG.model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        stream: true,
+        temperature: 0.8,
+        max_tokens: 2048
+      }),
+      signal: controller.signal
+    });
+    if (!resp.ok) {
+      let errMsg = '';
+      try { const err = await resp.json(); errMsg = err.error?.message || `HTTP ${resp.status}`; }
+      catch (_) { errMsg = `HTTP ${resp.status}`; }
+      throw new Error(errMsg);
+    }
+    return resp;
+  };
+
+  try {
+    // 1st: direct API call
+    const resp = await attemptFetch(AI_CONFIG.endpoint, {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey
+    });
+    clearTimeout(timeoutId);
+    return await parseSSEStream(resp);
+  } catch (err) {
+    // 2nd: fallback via local proxy (python3 server.py)
+    if (err.name === 'TypeError' || err.message.includes('Failed to fetch') || err.message.includes('CORS')) {
+      console.warn('Direct API blocked (CORS), trying local proxy...');
+      try {
+        const proxyResp = await fetch('http://localhost:8899/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            category: currentTool,
+            prompt: userPrompt
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (!proxyResp.ok) throw new Error('Proxy error');
+        const data = await proxyResp.json();
+        const outputEl = document.getElementById('output-text');
+        outputEl.textContent = data.content;
+        return data.content;
+      } catch (proxyErr) {
+        console.warn('Local proxy also unavailable:', proxyErr.message);
+        clearTimeout(timeoutId);
+        throw new Error('请先启动本地代理：cd ai-content-bank && python3 server.py');
+      }
+    }
+    clearTimeout(timeoutId);
+    throw err;
+  }
+}
+
+async function parseSSEStream(resp) {
+  const outputEl = document.getElementById('output-text');
+  outputEl.innerHTML = '';
+  
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let fullContent = '';
+  let buffer = '';
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || !trimmed.startsWith('data: ')) continue;
+
+        const dataStr = trimmed.slice(6);
+        if (dataStr === '[DONE]') continue;
+
+        try {
+          const json = JSON.parse(dataStr);
+          const delta = json.choices?.[0]?.delta?.content;
+          if (delta) {
+            fullContent += delta;
+            outputEl.textContent = fullContent;
+            outputEl.scrollTop = outputEl.scrollHeight;
+          }
+        } catch (_) { /* skip malformed JSON */ }
+      }
+    }
+
+    if (buffer.trim().startsWith('data: ') && buffer.trim() !== 'data: [DONE]') {
+      try {
+        const json = JSON.parse(buffer.trim().slice(6));
+        const delta = json.choices?.[0]?.delta?.content;
+        if (delta) {
+          fullContent += delta;
+          outputEl.textContent = fullContent;
+        }
+      } catch (_) { /* ignore */ }
+    }
+
+    return fullContent;
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error('请求超时（60s），AI 服务响应过慢');
+    }
+    throw err;
+  }
+}
+
+// ==================== Typing effect (fallback only) ====================
+async function streamTextTyping(text) {
+  const el = document.getElementById('output-text');
+  el.textContent = '';
+  const chars = text.split('');
+  let i = 0;
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      const chunk = Math.floor(Math.random() * 4) + 1;
+      for (let j = 0; j < chunk && i < chars.length; j++, i++) {
+        el.textContent += chars[i];
+      }
+      // Scroll as typing progresses
+      el.scrollTop = el.scrollHeight;
+      if (i >= chars.length) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 15);
+  });
+}
+
+// ==================== Sample Outputs ====================
+function getSampleOutput(toolId, selections, extra) {
+  const samples = {
+    story: `月光如练，洒落在京都最繁华的朱雀大街上。
+
+江辞踩着碎石铺就的青石板，袖间暗器已然就位。
+
+三年前，她以"一品候府嫡女"的身份死去——不，应该说是被杀——而今，她重生归来，扮作商贾之女，不动声色地渗入这座权贵云集的城市。
+
+"江小姐慢走。"
+
+低沉的嗓音从身后传来，江辞脚步一顿，却没有回头。她认出这把声音，认得太清楚了——是他，是那个三年前亲手在她身上签下赐死文书的男人。
+
+萧凌。当朝摄政王，权倾天下，人称"活阎王"。
+
+"王爷认错人了。"她轻描淡写，转身时已换上最普通的商贾笑意，"民女方氏，初入京城，还望王爷多多关照。"
+
+萧凌定定地看着她，深邃的眸子里翻涌着她看不懂的情绪。良久，他勾唇，语气却淡漠如冰：
+
+"方小姐，本王…的确认错了。"
+
+江辞心跳漏了一拍。
+
+他不认得她——还是说，他在等她露出马脚？
+
+这盘棋，才刚刚开始。`,
+
+    copywriting: `🌟【爆款新品 | 这条裙子让我一夜涨粉5000+】
+
+姐妹们！！我人生第一次因为一件衣服被疯狂问链接！
+
+✨ 面料是真的绝——100%桑蚕丝，上身那种凉滑感，穿过的都说像裹着微风睡觉。
+
+✨ 设计感拉满——收腰设计+斜肩剪裁，无论什么身材穿上去都能直接出片！165cm的我穿M码，遮肉显瘦效果满分！
+
+✨ 颜色真的绝——这个杏粉色拍照超级上镜，朋友直呼"这是哪来的仙女"（已截图留存哈哈哈）
+
+💰 价格还在我的接受范围内，600多的价格换来了一整个夏天的快乐！
+
+📦 附赠防尘袋+真丝保养说明卡，细节满分！
+
+⚠️ 注意：尺码偏小建议拍大一号，颜色有杏粉/烟蓝/米白三色可选。
+
+❤️ 想要链接的姐妹扣"1"！限量库存，有意向的早下手！
+
+#今日穿搭 #真丝裙 #初夏穿搭 #显瘦穿搭`,
+
+    email: `主题：项目进展汇报及下阶段工作计划——[项目名称]
+
+尊敬的[领导姓名]：
+
+您好！
+
+谨向您汇报"[项目名称]"本阶段的工作进展情况。
+
+**一、已完成工作**
+1. 完成需求调研工作，共访谈关键干系人12名，形成需求文档初稿；
+2. 技术架构方案已通过内部评审，预计下周完成详细设计文档；
+3. 项目团队已到位，核心成员5名均已参与项目启动会。
+
+**二、当前进展**
+项目整体进度符合预期，目前处于开发第一阶段（预计完成度约35%）。部分第三方接口对接存在轻微延期风险，团队已启动应对预案，预计不影响整体交付节点。
+
+**三、下阶段计划**
+- 本月底前：完成核心模块开发及单元测试
+- 下月初：启动集成测试，邀请业务方参与UAT
+- 下月中：提交上线申请，准备生产环境部署
+
+如有任何需要进一步说明之处，欢迎随时联系我。感谢您的关注与支持！
+
+此致
+敬礼
+
+[您的姓名]
+[日期]`,
+
+    poem: `《秋夜思远》
+
+明月照孤客，
+秋风入画楼。
+千山云不散，
+一叶水空流。
+
+【赏析】此诗以"明月"起兴，借秋夜之景写羁旅之思。"孤客"二字点明身份，"画楼"则暗示归处遥远。颈联以千山云聚写愁绪难散，末句以落叶随水写岁月蹉跎、身不由己之感。全诗意象清丽，情感深沉，寓情于景，余韵悠长。`,
+
+    resume: `【优化后版本】
+
+**项目经历 · XXX电商平台数据中台建设（2022.06 - 2023.03）**
+
+主导跨部门数据中台从0到1建设，独立完成需求调研、架构设计及核心模块开发，项目按时交付并在全公司推广落地。
+
+核心成果：
+• 构建统一数据接入层，整合12个业务系统数据源，日处理数据量突破3亿条，接入效率提升**67%**
+• 设计并实现实时数据看板，支持100+核心业务指标监控，数据延迟从T+1降至**实时（<5分钟）**
+• 推动数据治理规范落地，制定数据质量标准18项，问题数据发现率提升**40%**，有效支撑年度双11大促
+• 通过缓存架构优化，系统查询响应时间从1.2s压缩至**0.15s**，支撑峰值QPS 5000+
+
+技术栈：Flink、Spark、Hive、ClickHouse、Kafka、Spring Boot
+
+**优化说明：**
+以上版本应用了STAR法则（情境→任务→行动→成果），将模糊描述替换为可量化的数据指标，突出个人贡献和业务价值，更符合互联网大厂简历筛选标准。`,
+
+    summary: `【文章摘要】
+
+**核心论点**
+本文探讨了大语言模型（LLM）在企业级应用中的落地路径，指出"幻觉问题"与"成本控制"是当前规模化部署的两大核心障碍。
+
+**关键发现**
+1. 检索增强生成（RAG）技术可将模型错误率降低约60%，是解决幻觉问题的主流方案；
+2. 微调成本已从2022年的百万美元级降至万元级，开源模型生态成熟度持续提升；
+3. 企业采用"大模型+小模型"协同架构，在保持效果的同时可节省70%以上推理成本。
+
+**行动建议**
+优先在文档处理、代码生成、客服自动化三个场景试点，建议从RAG方案切入，避免直接微调导致的高成本和维护负担。
+
+**结论**
+2024年将是企业AI落地的关键年，率先建立AI工作流的企业将在效率和成本上获得显著竞争优势。`,
+
+    translate: `**英文翻译（正式商务版）**
+
+In the context of today's increasingly competitive business landscape, effectively communicating our company's core values and product advantages to target clients has become a critical priority for our team.
+
+To this end, we have developed a comprehensive market penetration strategy, incorporating a multi-channel approach encompassing digital marketing, strategic partnerships, and direct sales initiatives. Our goal is to achieve a 30% increase in market share within the next fiscal year.
+
+We look forward to the opportunity to discuss these initiatives in greater detail during our upcoming meeting.
+
+---
+
+**润色说明：**
+• "竞争激烈的商业环境" → "increasingly competitive business landscape"（更地道的商务表达）
+• "传递" → "communicating"（比translate更自然）
+• 整体调整为被动与主动语态混用，符合英文商务文书习惯
+• 数字目标"30%"予以保留，增强可信度`,
+
+    title: `以下是为您生成的10个爆款标题方案：
+
+1. 月薪5000和月薪50000的人，差距不在努力，在这3个思维方式
+2. 为什么越努力的人反而越焦虑？心理学家给出了这个答案
+3. 30岁之前一定要明白的10件事（第7条让我后悔了5年）
+4. 同样工作3年，有人升职加薪，有人原地踏步，区别就在这里
+5. 凌晨三点，我终于想通了一件事
+6. 那些年薪百万的人，都在悄悄做这件事（99%的人不知道）
+7. 你以为的努力，只是感动了自己而已
+8. 看完这篇文章，我删掉了收藏夹里所有的"有用干货"
+9. 别再问"怎么才能有钱"了，这个问题本身就是错的
+10. 一个让我效率翻倍的小习惯，坚持了1000天`,
+
+    children: `🌟 **《勇敢的小水珠》**
+
+从前，在一片翠绿的大森林里，住着一颗名叫叮叮的小水珠。
+
+叮叮和成千上万的兄弟姐妹一起，住在一片又大又圆的荷叶上。每天早晨，太阳公公一出来，叮叮就会在叶子上滚来滚去，像坐滑梯一样，开心极了！
+
+可是叮叮有一个烦恼——他太小了。
+
+"我什么都做不了，"叮叮叹了口气，"风一吹我就跑，太阳一晒我就变小。"
+
+旁边的老青蛙听到了，呱呱笑着说："小水珠啊，你可不要小看自己！知道吗，大海也是由一颗颗小水珠组成的呢。"
+
+"真的吗？"叮叮瞪大了眼睛。
+
+"当然是真的！"老青蛙说，"每一颗小水珠都有自己的使命。有的滋润花朵，有的汇入小溪，有的变成彩虹——"
+
+正说着，一阵大风吹来，叮叮"嗖"的一下被吹到了空中。他害怕极了，紧紧闭着眼睛。等他再睁开时，发现自己正落在干涸的土地上。
+
+"好渴啊……"身边一朵蔫蔫的小花轻轻地说。
+
+叮叮想也没想，滚了过去，把自己融进了泥土里。小花喝到了水，慢慢地抬起了头，花瓣一片片舒展开来。
+
+"谢谢你，小水珠！"小花开心地说。
+
+叮叮笑了。他终于明白了——即使是最渺小的存在，也能带给世界大大的美好。
+
+---
+**📖 故事寄语**：每个孩子都是一颗小水珠，虽然还很小，但已经拥有让世界变得更美好的力量。`,
+    
+    biography: `📜 **《从讲台到田间——李老师的三十年》**
+
+"我这一辈子，最骄傲的不是拿了多少奖，而是看着那些孩子一个个走出大山。"
+
+76岁的李淑华坐在老屋门槛上，望着远处层层叠叠的茶山，目光里满是岁月沉淀后的平静。
+
+**1984年，她23岁。**
+
+师范毕业的李淑华被分配到浙南山区的溪口村小学。学校只有一间土坯房，三个年级挤在一起上课，黑板是木板刷了漆，粉笔要省着用。
+
+"第一天上课，来了17个孩子，最小的5岁，最大的14岁。他们眼睛里的那种渴望，我这辈子都忘不了。"
+
+那一夜，她在煤油灯下写下了日记："留下来，把这些孩子教好。"
+
+这一留，就是三十年。
+
+**1992年，她31岁。**
+
+村里通了公路，但还是没有老师愿意来。李淑华一个人教语文、数学、音乐、体育。她学会了弹脚踏风琴，学会了用竹子做教具，学会了给孩子们剪头发。
+
+那一年，她带的第一个毕业班，6个孩子考上了县里的中学。全村放了一夜的鞭炮。
+
+"我躲在屋里哭了。不是因为舍不得，是因为觉得——值了。"
+
+**2008年，她47岁。**
+
+李淑华的学生里，有人考上了大学，有人成了医生，有人回到村里当了村支书。这一年，她被评为"全国优秀乡村教师"。
+
+去北京领奖那天，她穿上了女儿买的新衣服。站在人民大会堂里，她说的第一句话是："我只是一个普通的乡村教师，我的荣誉属于我的每一个学生。"
+
+**2014年，她53岁。**
+
+退休那天，全村人都来了。从教三十年的最后一堂课，李淑华讲的还是那一篇课文——《种子的力》。
+
+"种子很小，但它有一种谁也挡不住的力量。那就是向上、向光、向着未来生长的力量。你们每一个人，都是一颗种子。"
+
+如今，李淑华在村里办了一个小小的图书室。每到周末，孩子们还是会叫她"李老师"，围坐在一起听她讲故事。
+
+"教书这件事，"她说，"不是谋生，是谋心。"
+
+这是李淑华的故事，也是千千万万乡村教师的故事。他们用一生，在不起眼的地方，做着最了不起的事。`
+  };
+
+  return samples[toolId] || `正在为您生成内容...\n\n根据您的设定，AI 创作系统正在处理您的请求。实际使用时，这里会接入真实的 AI 模型（如 GPT-4、Claude 等）来生成内容。\n\n设定信息：\n${JSON.stringify(selections, null, 2)}\n\n补充说明：${extra || '无'}`;
+}
+
+// ==================== Utilities ====================
+function copyOutput() {
+  const text = document.getElementById('output-text')?.textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('已复制到剪贴板');
+  }).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    showToast('已复制到剪贴板');
+  });
+}
+
+function clearOutput() {
+  const outputEl = document.getElementById('output-area');
+  outputEl.classList.remove('visible');
+  outputEl.style.display = 'none';
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// Initialize: check API key status on page load
+updateApiKeyBadge();
+</script>
+</body>
+</html>
