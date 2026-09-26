@@ -1548,7 +1548,7 @@ function updateApiKeyBadge() {
 // ==================== AI API Configuration ====================
 const AI_CONFIG = {
   endpoint: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-  model: 'doubao-1-5-pro-32k-250115',
+  model: 'doubao-seed-2-1-pro-260915',
   timeout: 60000,
   maxRetries: 1
 };
@@ -1672,7 +1672,8 @@ async function generate() {
     statusText.textContent = aiSuccess ? '✓ 创作完成 · AI' : '✓ 创作完成 · 本地示例';
   }
 
-  const outputText = document.getElementById('output-text').textContent;
+  const outputTextEl = document.getElementById('output-text');
+  const outputText = outputTextEl ? outputTextEl.textContent : '';
   const charCount = outputText.length;
   const wordCount = Math.ceil(charCount / 2);
   const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
@@ -1702,7 +1703,8 @@ async function callRealAI(systemPrompt, userPrompt) {
         ],
         stream: true,
         temperature: 0.8,
-        max_tokens: 2048
+        max_tokens: 2048,
+        thinking: { type: 'disabled' }
       }),
       signal: controller.signal
     });
@@ -1741,7 +1743,7 @@ async function callRealAI(systemPrompt, userPrompt) {
         if (!proxyResp.ok) throw new Error('Proxy error');
         const data = await proxyResp.json();
         const outputEl = document.getElementById('output-text');
-        outputEl.textContent = data.content;
+        if (outputEl) outputEl.textContent = data.content;
         return data.content;
       } catch (proxyErr) {
         console.warn('Local proxy also unavailable:', proxyErr.message);
@@ -1756,6 +1758,7 @@ async function callRealAI(systemPrompt, userPrompt) {
 
 async function parseSSEStream(resp) {
   const outputEl = document.getElementById('output-text');
+  if (!outputEl) return '';
   outputEl.innerHTML = '';
   
   const reader = resp.body.getReader();
@@ -1814,6 +1817,7 @@ async function parseSSEStream(resp) {
 // ==================== Typing effect (fallback only) ====================
 async function streamTextTyping(text) {
   const el = document.getElementById('output-text');
+  if (!el) return;
   el.textContent = '';
   const chars = text.split('');
   let i = 0;
